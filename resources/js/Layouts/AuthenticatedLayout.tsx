@@ -10,6 +10,7 @@ import ArrowBackIosNewRoundedIcon from "@mui/icons-material/ArrowBackIosNewRound
 import DashboardIcon from "@/Components/Icons/DashboardIcon";
 import TutorIcon from "@/Components/Icons/TutorIcon";
 import CalendarIcon from "@/Components/Icons/CalendarIcon";
+import PrimaryButton from "@/Components/PrimaryButton";
 
 export default function Authenticated({
     user,
@@ -64,24 +65,18 @@ export default function Authenticated({
                         </div>
 
                         <div className="hidden sm:flex sm:gap-4 sm:items-center sm:ml-6">
-                            <Link
-                                href={"/book-lesson"}
-                                className={
-                                    "bg-white px-4 py-1.5 text-secondary-dark font-medium rounded-lg"
-                                }
-                            >
-                                <ArrowBackIosNewRoundedIcon
-                                    style={{ fontSize: "16px" }}
-                                />
-                                AlifBee
+                            <Link href={"/buy-credits"}>
+                                <PrimaryButton className="bg-white hover:bg-gray-50">
+                                    <ArrowBackIosNewRoundedIcon
+                                        className="mr-1"
+                                        style={{ fontSize: "16px" }}
+                                    />
+                                    AlifBee
+                                </PrimaryButton>
                             </Link>
-                            <Link
-                                href={"/book-lesson"}
-                                className={
-                                    "bg-primary hover:bg-primary px-4 py-1.5 text-secondary-dark font-medium rounded-lg"
-                                }
-                            >
-                                Book a lesson
+
+                            <Link href={"/buy-credits"}>
+                                <PrimaryButton>Book a lesson</PrimaryButton>
                             </Link>
                             <div className="relative">
                                 <Dropdown>

@@ -28,7 +28,7 @@ export default function TabLink({
             className={`inline-block py-4 border-b-2  rounded-t-lg ${
                 active
                     ? "active border-secondary-dark text-secondary-dark"
-                    : " border-transparent hover:text-secondary-500 hover:border-secondary-500"
+                    : " border-transparent hover:text-secondary-400 hover:border-secondary-400"
             }`}
         >
             {children}

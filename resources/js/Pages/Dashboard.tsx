@@ -14,25 +14,63 @@ import CopyIcon from "@/Components/Icons/CopyIcon";
 import ComplatedIcon from "@/Components/Icons/ComplatedIcon";
 import EduTimeIcon from "@/Components/Icons/EduTimeIcon";
 import ControlPointRoundedIcon from "@mui/icons-material/ControlPointRounded";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { selectPageProps, updatePageProps } from "@/features/pagePropsSlice";
 
 export default function Dashboard({ auth }: PageProps) {
     const page = usePage<PageProps>();
 
-    const pageProps: PageProps = createPageProps(page.props);
-    console.log("page.props", page.props);
-    console.log("pageProps", pageProps);
+    const dispatch = useDispatch();
+    const pageProps = useSelector(selectPageProps);
 
-    console.log(pageProps.lessons[0]);
+    useEffect(() => {
+        dispatch(updatePageProps(page.props));
+    }, [page.props]);
 
-    const [status, setStatus] = useState(page.props.lessons_status.status);
+    const [status, setStatus] = useState(pageProps.lessons_status.status);
 
-    if (!Array.isArray(page.props.lessons)) {
-        page.props.lessons = Object.values(page.props.lessons);
-    }
+    const [copiedZoomId, setCopiedZoomId] = useState(false);
+    const [copiedPassword, setCopiedPassword] = useState(false);
+
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            setCopiedZoomId(false);
+        }, 500);
+
+        return () => clearTimeout(timeoutId);
+    }, [copiedZoomId]);
+
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            setCopiedPassword(false);
+        }, 500);
+
+        return () => clearTimeout(timeoutId);
+    }, [copiedPassword]);
+
+    const handleCopyToClipboard = (text: string, isZoomId: boolean) => {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+
+        try {
+            document.execCommand("copy");
+            if (isZoomId) {
+                setCopiedZoomId(true);
+            } else {
+                setCopiedPassword(true);
+            }
+        } catch (err) {
+            console.error("Failed to copy text: ", err);
+        }
+
+        document.body.removeChild(textArea);
+    };
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout user={pageProps.auth.user}>
             <Head title="Dashboard" />
 
             <div
@@ -53,11 +91,11 @@ export default function Dashboard({ auth }: PageProps) {
                                             Credit balance:
                                         </h2>
                                         <HexagonIcon>
-                                            {auth?.user?.balance}
+                                            {pageProps.auth.user.balance}
                                         </HexagonIcon>
                                     </div>
                                     <p className="text-sm text-secondary-dark">
-                                        *{auth?.user?.balance} Credits
+                                        *{pageProps.auth.user.balance} Credits
                                     </p>
                                 </div>
                             </div>
@@ -79,12 +117,12 @@ export default function Dashboard({ auth }: PageProps) {
                     {auth?.user?.lessons ? (
                         <Card>
                             <TabNavigation
-                                lessons={auth?.user?.lessons}
+                                lessons={pageProps.auth.user.lessons}
                                 status={status}
                                 setStatus={setStatus}
                             />
                             <TurorsTable
-                                lessons={page.props.lessons}
+                                lessons={pageProps.lessons}
                                 className="mt-6"
                             />
                         </Card>
@@ -161,7 +199,7 @@ export default function Dashboard({ auth }: PageProps) {
                             <div className="flex items-center gap-2">
                                 <div className="flex items-center gap-1">
                                     <img
-                                        src="/assets/icons/zoom.png"
+                                        src="/icons/zoom.png"
                                         width={16}
                                         alt=""
                                     />
@@ -172,14 +210,26 @@ export default function Dashboard({ auth }: PageProps) {
                                 <p className="text-sm text-secondary-dark">
                                     meet.zoom.com/oup-dxjr
                                 </p>
-                                <CopyIcon />
+                                <button
+                                    onClick={() => {
+                                        handleCopyToClipboard(
+                                            "meet.zoom.com/oup-dxjr",
+                                            true
+                                        );
+                                    }}
+                                    className={`${
+                                        copiedZoomId ? "jelly-anim" : ""
+                                    }`}
+                                >
+                                    <CopyIcon />
+                                </button>
                             </div>
 
                             {/* Zoom Password */}
                             <div className="flex items-center gap-2">
                                 <div className="flex items-center gap-1">
                                     <img
-                                        src="/assets/icons/zoom.png"
+                                        src="/icons/zoom.png"
                                         width={16}
                                         alt=""
                                     />
@@ -190,7 +240,16 @@ export default function Dashboard({ auth }: PageProps) {
                                 <p className="text-sm text-secondary-dark">
                                     123444
                                 </p>
-                                <CopyIcon />
+                                <button
+                                    onClick={() => {
+                                        handleCopyToClipboard("123444", false);
+                                    }}
+                                    className={`${
+                                        copiedPassword ? "jelly-anim" : ""
+                                    }`}
+                                >
+                                    <CopyIcon />
+                                </button>
                             </div>
                         </div>
                     </Card>

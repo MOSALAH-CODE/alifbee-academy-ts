@@ -40,7 +40,7 @@ export class User {
 }
 
 export class Lesson {
-    frontend_id: number;
+    id: number;
     user_id: number;
     tutor_id: number;
     start_date: string;
@@ -52,7 +52,7 @@ export class Lesson {
     tutor: User;
 
     constructor(
-        frontend_id: number,
+        id: number,
         user_id: number,
         tutor_id: number,
         start_date: string,
@@ -63,7 +63,7 @@ export class Lesson {
         credit_cost: number,
         tutor: User
     ) {
-        this.frontend_id = frontend_id;
+        this.id = id;
         this.user_id = user_id;
         this.tutor_id = tutor_id;
         this.start_date = start_date;
@@ -102,13 +102,18 @@ export type PageProps = {
 
 // Create a factory function to convert JSON data to PageProps
 export const createPageProps = (json: any): PageProps => {
+    if (json.lessons && !Array.isArray(json.lessons)) {
+        json.lessons = Object.values(json.lessons);
+    }
+
+    const lessons = (json.lessons || []).map((lessonJson: any) =>
+        Lesson.fromJson(lessonJson)
+    );
     return {
         auth: {
             user: User.fromJson(json.auth.user),
         },
-        lessons: (json.lessons || []).map((lessonJson: any) =>
-            Lesson.fromJson(lessonJson)
-        ),
+        lessons,
         lessons_status: { status: json.lessons_status?.status || "" },
     };
 };
