@@ -31,7 +31,7 @@ class Lessons extends Model
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
+        // 'password',
     ];
 
     /**
@@ -42,7 +42,7 @@ class Lessons extends Model
     protected $casts = [
         'start_date' => 'datetime',
         'end_date' => 'datetime',
-        'password' => 'hashed',
+        // 'password' => 'hashed',
     ];
 
     public function tutor() {

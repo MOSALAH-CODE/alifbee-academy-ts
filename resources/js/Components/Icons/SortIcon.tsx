@@ -1,4 +1,4 @@
-export default function SortIcon() {
+export default function SortIcon({ order = false, asc = false }) {
     return (
         <svg
             width="8"
@@ -9,7 +9,7 @@ export default function SortIcon() {
         >
             <path
                 d="M1.33268 10.3335L3.99935 7.66683L6.66602 10.3335"
-                stroke="#C4C4C4"
+                stroke={order && !asc ? "#4C3451" : "#C4C4C4"}
                 strokeWidth="1.3"
                 strokeMiterlimit="10"
                 strokeLinecap="round"
@@ -17,7 +17,7 @@ export default function SortIcon() {
             />
             <path
                 d="M6.66732 15.6665L4.00065 18.3332L1.33398 15.6665"
-                stroke="#C4C4C4"
+                stroke={order && asc ? "#4C3451" : "#C4C4C4"}
                 strokeWidth="1.3"
                 strokeMiterlimit="10"
                 strokeLinecap="round"

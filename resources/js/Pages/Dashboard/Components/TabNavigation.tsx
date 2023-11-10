@@ -1,26 +1,18 @@
-import { Lesson } from "@/types";
+import { useSelector } from "react-redux";
 import TabLink from "./TabLink";
-import { useState, useEffect } from "react";
+import { selectPageProps } from "@/features/pagePropsSlice";
+import { OutlineButton } from "../../../Components/Buttons";
 
 interface TabNavigationProps {
-    lessons: Lesson[];
     status: string;
-    setStatus: (status: string) => void;
     className?: string;
 }
 
-function countStatus(lessons: Lesson[], status: string) {
-    return lessons.filter((lesson) => lesson.status === status).length;
-}
-
 export default function TabNavigation({
-    lessons,
     status,
     className = "",
 }: TabNavigationProps) {
-    const upcomingCount = countStatus(lessons, "upcoming");
-    const completedCount = countStatus(lessons, "completed");
-    const canceledCount = countStatus(lessons, "canceled");
+    const pageProps = useSelector(selectPageProps);
 
     return (
         <div
@@ -34,36 +26,33 @@ export default function TabNavigation({
                     <h3 className="text-xl font-semibold text-secondary-dark">
                         My lessons:
                     </h3>
-                    <div className="px-2 py-1 border-2 rounded-lg border-amber-400 text-secondary-dark">
+                    <OutlineButton className="text-sm">
                         Book a lesson
-                    </div>
+                    </OutlineButton>
                 </div>
-                <ul className="flex flex-wrap gap-2 -mb-px">
+                <ul className="flex flex-wrap gap-2 -mb-px ">
                     <li className="mr-2">
                         <TabLink
                             href="/dashboard?status=upcoming"
                             active={status === "upcoming"}
-                            // onClick={() => setStatus("upcoming")}
                         >
-                            Upcoming ({upcomingCount})
+                            Upcoming ({pageProps.countLessons.upcoming})
                         </TabLink>
                     </li>
                     <li className="mr-2">
                         <TabLink
                             href="/dashboard?status=completed"
                             active={status === "completed"}
-                            // onClick={() => setStatus("completed")}
                         >
-                            Completed ({completedCount})
+                            Completed ({pageProps.countLessons.completed})
                         </TabLink>
                     </li>
                     <li className="mr-2">
                         <TabLink
                             href="/dashboard?status=canceled"
                             active={status === "canceled"}
-                            // onClick={() => setStatus("canceled")}
                         >
-                            Canceled ({canceledCount})
+                            Canceled ({pageProps.countLessons.canceled})
                         </TabLink>
                     </li>
                 </ul>

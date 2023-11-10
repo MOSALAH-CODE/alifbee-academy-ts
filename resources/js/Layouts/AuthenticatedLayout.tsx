@@ -10,8 +10,8 @@ import ArrowBackIosNewRoundedIcon from "@mui/icons-material/ArrowBackIosNewRound
 import DashboardIcon from "@/Components/Icons/DashboardIcon";
 import TutorIcon from "@/Components/Icons/TutorIcon";
 import CalendarIcon from "@/Components/Icons/CalendarIcon";
-import PrimaryButton from "@/Components/PrimaryButton";
-
+import { PrimaryButton } from "@/Components/Buttons";
+import PageFooter from "@/Components/PageFooter";
 export default function Authenticated({
     user,
     header,
@@ -38,18 +38,14 @@ export default function Authenticated({
                                     active={route().current("dashboard")}
                                 >
                                     <DashboardIcon />
-                                    <span className={"text-base"}>
-                                        Dashboard
-                                    </span>
+                                    <span>Dashboard</span>
                                 </NavLink>
                                 <NavLink
                                     href={route("tutors")}
                                     active={route().current("tutors")}
                                 >
                                     <TutorIcon />
-                                    <span className={"text-base"}>
-                                        Find tutors
-                                    </span>
+                                    <span>Find tutors</span>
                                 </NavLink>
                                 <NavLink
                                     href={route("calendar")}
@@ -57,9 +53,7 @@ export default function Authenticated({
                                     active={route().current("calendar")}
                                 >
                                     <CalendarIcon />
-                                    <span className={"text-base"}>
-                                        My calendar
-                                    </span>
+                                    <span>My calendar</span>
                                 </NavLink>
                             </div>
                         </div>
@@ -204,6 +198,8 @@ export default function Authenticated({
             <main className={"mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 p-12"}>
                 {children}
             </main>
+
+            <PageFooter companyName="Your Company" />
         </div>
     );
 }

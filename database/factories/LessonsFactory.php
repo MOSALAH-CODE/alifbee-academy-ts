@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 class LessonsFactory extends Factory
 {
 
+
     /**
      * Define the model's default state.
      *
@@ -18,14 +19,16 @@ class LessonsFactory extends Factory
      */
     public function definition(): array
     {
+        $status = $this->faker->randomElement(['upcoming', 'completed', 'canceled']);
+
         return [
             'user_id' => fake()->numberBetween(7, 16),
             'tutor_id' => fake()->numberBetween(2, 6),
             'start_date' => now(),
             'end_date' => now()->addHours(1),
-            'status' => 'upcoming',
+            'status' => $status,
             'meet_id' => 'meet.zoom.com/oup-dxjr',
-            'password' => Hash::make('12345'),
+            'password' => '12345',
             'credit_cost' => 1,
         ];
     }

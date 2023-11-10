@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
         ]);
         User::factory(10)->create();
 
-        Lessons::factory(20)->create();
+        Lessons::factory(50)->create();
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',

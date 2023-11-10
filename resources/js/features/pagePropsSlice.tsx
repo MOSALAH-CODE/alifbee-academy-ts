@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
-import { PageProps, createPageProps } from "@/types";
+import { createPageProps } from "@/types";
 
 export const pagePropsSlice = createSlice({
     name: "pageProps",

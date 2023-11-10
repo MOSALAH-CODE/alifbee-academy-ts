@@ -90,11 +90,28 @@ export class Lesson {
     }
 }
 
+export class Statuses {
+    upcoming: number;
+    completed: number;
+    canceled: number;
+
+    constructor(upcoming: number, complated: number, canceled: number) {
+        this.upcoming = upcoming;
+        this.completed = complated;
+        this.canceled = canceled;
+    }
+    static fromJson(json: any): Statuses {
+        return new Statuses(json?.upcoming, json?.completed, json?.canceled);
+    }
+}
+
 export type PageProps = {
     auth: {
         user: User;
     };
     lessons: Lesson[];
+    countLessons: Statuses;
+    completedEduTime: string;
     lessons_status: {
         status: string;
     };
@@ -109,10 +126,13 @@ export const createPageProps = (json: any): PageProps => {
     const lessons = (json.lessons || []).map((lessonJson: any) =>
         Lesson.fromJson(lessonJson)
     );
+
     return {
         auth: {
             user: User.fromJson(json.auth.user),
         },
+        countLessons: Statuses.fromJson(json.countLessons),
+        completedEduTime: json.completedEduTime,
         lessons,
         lessons_status: { status: json.lessons_status?.status || "" },
     };

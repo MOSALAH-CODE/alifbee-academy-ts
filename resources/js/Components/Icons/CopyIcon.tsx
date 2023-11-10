@@ -5,7 +5,7 @@ export default function CopyIcon() {
             height="16"
             viewBox="0 0 16 16"
             fill="none"
-            className="stroke-[#8E7F91] hover:stroke-primary-700 cursor-pointer"
+            className="stroke-[#8E7F91] hover:stroke-primary-700 cursor-pointer transition duration-150 ease-in-out"
             xmlns="http://www.w3.org/2000/svg"
         >
             <path
