@@ -21,7 +21,7 @@ export default function Authenticated({
         useState(false);
 
     return (
-        <div className="min-h-screen bg-body">
+        <div className="flex flex-col min-h-screen bg-body">
             <nav className="border-b border-gray-100 bg-secondary-dark">
                 <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
@@ -195,11 +195,13 @@ export default function Authenticated({
                 </header>
             )}
 
-            <main className={"mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 p-12"}>
+            <main
+                className={"flex-1 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 p-12"}
+            >
                 {children}
             </main>
 
-            <PageFooter companyName="Your Company" />
+            <PageFooter />
         </div>
     );
 }
