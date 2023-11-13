@@ -1,28 +1,21 @@
-import { Link } from "@inertiajs/react";
 import { PropsWithChildren, ReactNode } from "react";
 
-interface TabLinkProps {
+interface TabButtonProps {
     className?: string;
-    disabled?: boolean;
     active: boolean;
     children: ReactNode;
-    href: string;
     onClick?: () => void;
 }
 
-export default function TabLink({
+export default function TabButton({
     className = "",
-    disabled,
     active,
     children,
-    href,
     onClick,
     ...props
-}: PropsWithChildren<TabLinkProps>) {
+}: PropsWithChildren<TabButtonProps>) {
     return (
-        <Link
-            href={href}
-            preserveScroll
+        <button
             {...props}
             onClick={onClick}
             className={`inline-block py-4 border-b-2  rounded-t-lg transition ease-in-out duration-150  ${
@@ -32,6 +25,6 @@ export default function TabLink({
             }`}
         >
             {children}
-        </Link>
+        </button>
     );
 }

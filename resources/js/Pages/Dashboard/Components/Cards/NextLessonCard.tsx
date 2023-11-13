@@ -1,5 +1,5 @@
 // NextLessonCard.tsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CalendarIcon from "@/Components/Icons/CalendarIcon";
 import CopyIcon from "@/Components/Icons/CopyIcon";
 import Tooltip from "@mui/material/Tooltip";
@@ -40,12 +40,12 @@ interface NextLessonCardProps {
     handleCopyToClipboard: (text: string, isZoomId: boolean) => void;
 }
 
-const NextLessonCard: React.FC<NextLessonCardProps> = ({
+const NextLessonCard = ({
     lesson,
     copiedZoomId,
     copiedPassword,
     handleCopyToClipboard,
-}) => {
+}: NextLessonCardProps) => {
     const [currentTime, setCurrentTime] = useState(
         new Date().toLocaleTimeString([], {
             hour: "2-digit",

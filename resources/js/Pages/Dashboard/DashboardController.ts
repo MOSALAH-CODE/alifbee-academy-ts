@@ -5,11 +5,20 @@ import { useSelector } from "react-redux";
 function UseDashboardController() {
     const pageProps = useSelector(selectPageProps);
 
-    const [status, setStatus] = useState("");
+    // const [status, setStatus] = useState("");
+
+    // useEffect(() => {
+    //     setStatus(pageProps.lessons_status.status);
+    // }, [pageProps]);
+
+    const [status, setStatus] = useState("upcoming");
+    const [filteredLessons, setFilteredLessons] = useState(pageProps.lessons);
 
     useEffect(() => {
-        setStatus(pageProps.lessons_status.status);
-    }, [pageProps]);
+        setFilteredLessons(
+            pageProps.lessons.filter((lesson) => lesson.status.includes(status))
+        );
+    }, [status, pageProps.lessons]);
 
     const [copiedZoomId, setCopiedZoomId] = useState(false);
     const [copiedPassword, setCopiedPassword] = useState(false);
@@ -49,11 +58,12 @@ function UseDashboardController() {
 
         document.body.removeChild(textArea);
     };
-    
 
     return {
         pageProps,
         status,
+        setStatus,
+        filteredLessons,
         handleCopyToClipboard,
         copiedZoomId,
         copiedPassword,

@@ -14,25 +14,14 @@ class DashboardController extends Controller
         $countLessons = $this->countLessons($lessons);
         $completedEduTimeFormatted = $this->calculateCompletedEduTime($lessons);
 
-        $lessonsQuery = $lessons;
-
-        if ($request->has("status")) {
-            $status = $request->input("status");
-            $lessonsQuery = $lessonsQuery->where('status', $status);
-        }
-
-        
-
-        $filteredLessons = $lessonsQuery;
-
         return Inertia::render('Dashboard/index', [
-            'lessons' => $filteredLessons,
+            'lessons' => $lessons,
             'countLessons' => $countLessons,
             'completedEduTime' => $completedEduTimeFormatted,
             'lessons_status' => $request->only(["status"]),
         ]);
     }
-
+    
     private function countLessons($lessons)
     {
         $countLessons = [

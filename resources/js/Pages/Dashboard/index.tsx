@@ -7,24 +7,18 @@ import StatisticsCard from "./Components/Cards/StatisticsCard";
 import NextLessonCard from "./Components/Cards/NextLessonCard";
 import LessonsCard from "./Components/Cards/LessonsCard";
 import CreditBalanceCard from "./Components/Cards/CreditBalanceCard";
+import { useEffect, useState } from "react";
 
 const Dashboard = () => {
     const {
         pageProps,
         status,
+        setStatus,
+        filteredLessons,
         handleCopyToClipboard,
         copiedZoomId,
         copiedPassword,
     } = UseDashboardController();
-
-    // const fetchLessons = async () => {
-    //     const response = await inertia.get(route('dashboard', { status }));
-    //     inertia.replace(response);
-    // };
-
-    // useEffect(() => {
-    //     fetchLessons();
-    // }, [status]);
 
     return (
         <AuthenticatedLayout user={pageProps.auth.user}>
@@ -45,8 +39,13 @@ const Dashboard = () => {
                     {/* Lessons Section */}
                     {pageProps.auth?.user?.lessons ? (
                         <LessonsCard
-                            header={<TabNavigation status={status} />}
-                            lessons={pageProps.lessons}
+                            header={
+                                <TabNavigation
+                                    status={status}
+                                    setStatus={setStatus}
+                                />
+                            }
+                            lessons={filteredLessons}
                             divider={false}
                         />
                     ) : (
