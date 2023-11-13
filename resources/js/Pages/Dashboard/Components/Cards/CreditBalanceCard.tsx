@@ -6,12 +6,11 @@ import { PrimaryButton } from "@/Components/Buttons";
 import { Link } from "@inertiajs/react";
 import Card from "@/Components/Card";
 import ControlPointRoundedIcon from "@mui/icons-material/ControlPointRounded";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/features/userSlice";
 
-interface CreditBalanceCardProps {
-    balance: number;
-}
-
-const CreditBalanceCard: React.FC<CreditBalanceCardProps> = ({ balance }) => {
+const CreditBalanceCard = () => {
+    const user = useSelector(selectUser);
     const MINUTES_PER_CREDIT = 30;
 
     // State to hold calculated time
@@ -22,7 +21,7 @@ const CreditBalanceCard: React.FC<CreditBalanceCardProps> = ({ balance }) => {
 
     // Calculate time based on balance
     const calculateTime = () => {
-        const totalMinutes = balance * MINUTES_PER_CREDIT;
+        const totalMinutes = (user?.balance ?? 0) * MINUTES_PER_CREDIT;
         const hours = Math.floor(totalMinutes / 60);
         const minutes = totalMinutes % 60;
         setCalculatedTime({ hours, minutes });
@@ -30,7 +29,8 @@ const CreditBalanceCard: React.FC<CreditBalanceCardProps> = ({ balance }) => {
 
     useEffect(() => {
         calculateTime();
-    }, [balance]);
+        console.log("calculate");
+    }, [user?.balance]);
 
     return (
         <Card>
@@ -42,11 +42,11 @@ const CreditBalanceCard: React.FC<CreditBalanceCardProps> = ({ balance }) => {
                             <h2 className="text-xl font-semibold text-secondary-dark">
                                 Credit balance:
                             </h2>
-                            <HexagonIcon>{balance}</HexagonIcon>
+                            <HexagonIcon>{user?.balance}</HexagonIcon>
                         </div>
                         <p className="text-sm text-secondary-600">
-                            *{balance} Credits {calculatedTime.hours} hours{" "}
-                            {calculatedTime.minutes} min lesson
+                            *{user?.balance} Credits {calculatedTime.hours}{" "}
+                            hours {calculatedTime.minutes} min lesson
                         </p>
                     </div>
                 </div>

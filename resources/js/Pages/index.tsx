@@ -1,8 +1,11 @@
 import { Link, Head } from "@inertiajs/react";
 import { PageProps } from "@/types";
 import ApplicationLogo from "@/Components/ApplicationLogo";
+import useUserInitializer from "./Auth/UserInitializer";
 
-export default function Home({ auth }: PageProps) {
+export default function Index({ auth }: PageProps) {
+    useUserInitializer();
+
     return (
         <>
             <Head title="Welcome" />

@@ -7,7 +7,7 @@ import Dropdown from "../../../Components/Dropdown";
 import TrashIcon from "../../../Components/Icons/TrashIcon";
 import HistoryIcon from "../../../Components/Icons/HistoryIcon";
 import SortIcon from "../../../Components/Icons/SortIcon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
 import { useSelector } from "react-redux";
@@ -93,6 +93,9 @@ export default function LessonsTable({
     children,
     ...props
 }: LessonsTableProps) {
+    useEffect(() => {
+        console.log("LessonsTable");
+    }, []);
     const pageProps = useSelector(selectPageProps);
 
     const [showMore, setShowMore] = useState(false);

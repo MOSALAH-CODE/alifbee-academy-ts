@@ -1,5 +1,5 @@
 // StatisticsCard.tsx
-import React from "react";
+import React, { useEffect } from "react";
 import ComplatedIcon from "@/Components/Icons/ComplatedIcon";
 import EduTimeIcon from "@/Components/Icons/EduTimeIcon";
 import Card from "@/Components/Card";
@@ -9,10 +9,10 @@ interface StatisticsCardProps {
     educationTime: string;
 }
 
-const StatisticsCard: React.FC<StatisticsCardProps> = ({
+const StatisticsCard = ({
     completedLessons,
     educationTime,
-}) => {
+}: StatisticsCardProps) => {
     return (
         <Card
             header={

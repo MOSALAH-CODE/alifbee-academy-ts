@@ -24,7 +24,7 @@ use SebastianBergmann\Timer\Timer;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Home', [
+    return Inertia::render('index', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
     ]);

@@ -40,12 +40,12 @@ interface NextLessonCardProps {
     handleCopyToClipboard: (text: string, isZoomId: boolean) => void;
 }
 
-const NextLessonCard: React.FC<NextLessonCardProps> = ({
+const NextLessonCard = ({
     lesson,
     copiedZoomId,
     copiedPassword,
     handleCopyToClipboard,
-}) => {
+}: NextLessonCardProps) => {
     const [currentTime, setCurrentTime] = useState(
         new Date().toLocaleTimeString([], {
             hour: "2-digit",

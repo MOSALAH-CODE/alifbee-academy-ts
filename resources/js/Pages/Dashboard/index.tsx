@@ -17,15 +17,6 @@ const Dashboard = () => {
         copiedPassword,
     } = UseDashboardController();
 
-    // const fetchLessons = async () => {
-    //     const response = await inertia.get(route('dashboard', { status }));
-    //     inertia.replace(response);
-    // };
-
-    // useEffect(() => {
-    //     fetchLessons();
-    // }, [status]);
-
     return (
         <AuthenticatedLayout user={pageProps.auth.user}>
             <Head title="Dashboard" />
@@ -40,7 +31,7 @@ const Dashboard = () => {
                 {/* Left Section */}
                 <div className="col-span-12 space-y-6 lg:col-span-8">
                     {/* Balance Section */}
-                    <CreditBalanceCard balance={pageProps.auth.user.balance} />
+                    <CreditBalanceCard />
 
                     {/* Lessons Section */}
                     {pageProps.auth?.user?.lessons ? (
