@@ -125,7 +125,7 @@ export default function LessonsTable({
                         <th scope="col" className="pl-2 rounded-l-lg">
                             Tutors
                         </th>
-                        <th scope="col" className="py-2">
+                        <th scope="col" className="py-2 w-14">
                             <div className="flex items-center">
                                 <div
                                     className="bg-gray-300 inline-block min-h-[1.25rem] mr-4"
@@ -148,7 +148,7 @@ export default function LessonsTable({
                                 </div>
                             </div>
                         </th>
-                        <th scope="col" className="py-2">
+                        <th scope="col" className="py-2 w-14">
                             <div className="flex items-center">
                                 <div
                                     className="bg-gray-300 inline-block min-h-[1.25rem] mr-4"
@@ -174,7 +174,7 @@ export default function LessonsTable({
                             </div>
                         </th>
 
-                        <th scope="col" className="rounded-r-lg ">
+                        <th scope="col" className="w-6 rounded-r-lg ">
                             <div className="flex items-center">
                                 <div
                                     className="bg-gray-300 inline-block min-h-[1.25rem] mr-4"
@@ -193,7 +193,7 @@ export default function LessonsTable({
                         >
                             <th
                                 scope="row"
-                                className="pl-2 font-medium text-gray-900 whitespace-nowrap"
+                                className="pl-2 pr-4 font-medium text-gray-900 whitespace-nowrap"
                             >
                                 <div className="flex items-center gap-2 py-2">
                                     <Avatar
@@ -207,12 +207,12 @@ export default function LessonsTable({
                             </th>
 
                             <td className="py-2">
-                                <div className="flex items-center">
+                                <div className="flex items-center pr-4">
                                     <div
                                         className="bg-gray-300 inline-block min-h-[1.25rem] mr-4 h-9"
                                         style={{ width: "1.5px" }}
                                     ></div>
-                                    <div className="text-secondary-dark">
+                                    <div className="text-secondary-dark whitespace-nowrap">
                                         <p>
                                             {formatLessonDate(
                                                 lesson.start_date
@@ -228,13 +228,13 @@ export default function LessonsTable({
                                 </div>
                             </td>
                             <td className="py-2">
-                                <div className="flex items-center">
+                                <div className="flex items-center pr-4">
                                     <div
                                         className="bg-gray-300 inline-block min-h-[1.25rem] mr-4 h-9"
                                         style={{ width: "1.5px" }}
                                     ></div>
                                     <div
-                                        className={`px-2 py-1 capitalize border rounded ${getStatusColor(
+                                        className={`px-2 py-1 capitalize border rounded whitespace-nowrap ${getStatusColor(
                                             lesson.status
                                         )} text-secondary-dark`}
                                     >

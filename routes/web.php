@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TutorsController;
 use App\Models\Lessons;
@@ -29,79 +30,83 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-Route::get('/dashboard', function () {
-    $user = Auth::user();
-    $lessons = $user->lessons;
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
-    $countLessons = [
-        'upcoming' => 0,
-        'completed' => 0,
-        'canceled' => 0,
-    ];
+// Route::get('/dashboard', function () {
+//     $user = Auth::user();
+//     $lessons = $user->lessons;
 
-    $completedEduTimeInMinutes = 0;
+//     $countLessons = [
+//         'upcoming' => 0,
+//         'completed' => 0,
+//         'canceled' => 0,
+//     ];
 
-    foreach ($lessons as $lesson) {
-        switch ($lesson->status) {
-            case 'upcoming':
-                $countLessons['upcoming']++;
-                break;
-            case 'completed':{
-                $countLessons['completed']++;
-                $startDate = new DateTime($lesson->start_date);
-                $endDate = new DateTime($lesson->end_date);
-                $dateInterval = $startDate->diff($endDate);
-                $completedEduTimeInMinutes += ( $dateInterval->m * 30 * 24 * 60 ) + ( $dateInterval->d * 24 * 60 ) + ( $dateInterval->h * 60 ) + $dateInterval->i;
-                break;
-            }
-            case 'canceled':
-                $countLessons['canceled']++;
-                break;
-        }
-    }
+//     $completedEduTimeInMinutes = 0;
+
+//     foreach ($lessons as $lesson) {
+//         switch ($lesson->status) {
+//             case 'upcoming':
+//                 $countLessons['upcoming']++;
+//                 break;
+//             case 'completed':{
+//                 $countLessons['completed']++;
+//                 $startDate = new DateTime($lesson->start_date);
+//                 $endDate = new DateTime($lesson->end_date);
+//                 $dateInterval = $startDate->diff($endDate);
+//                 $completedEduTimeInMinutes += ( $dateInterval->m * 30 * 24 * 60 ) + ( $dateInterval->d * 24 * 60 ) + ( $dateInterval->h * 60 ) + $dateInterval->i;
+//                 break;
+//             }
+//             case 'canceled':
+//                 $countLessons['canceled']++;
+//                 break;
+//         }
+//     }
     
-    $days = floor($completedEduTimeInMinutes / (24 * 60));
-    $hours = floor(($completedEduTimeInMinutes % (24 * 60)) / 60);
-    $minutes = $completedEduTimeInMinutes % 60;
+//     $days = floor($completedEduTimeInMinutes / (24 * 60));
+//     $hours = floor(($completedEduTimeInMinutes % (24 * 60)) / 60);
+//     $minutes = $completedEduTimeInMinutes % 60;
 
-    // Format the output
-    $completedEduTimeFormatted = '';
-    if ($days > 0) {
-        $completedEduTimeFormatted .= $days . 'd';
-    }
+//     // Format the output
+//     $completedEduTimeFormatted = '';
+//     if ($days > 0) {
+//         $completedEduTimeFormatted .= $days . 'd';
+//     }
     
-    if ($hours > 0) {
-        if (!empty($completedEduTimeFormatted)) {
-            $completedEduTimeFormatted .= ' ';
-        }
-        $completedEduTimeFormatted .= $hours . 'h';
-    }
+//     if ($hours > 0) {
+//         if (!empty($completedEduTimeFormatted)) {
+//             $completedEduTimeFormatted .= ' ';
+//         }
+//         $completedEduTimeFormatted .= $hours . 'h';
+//     }
     
-    if ($minutes > 0 || empty($completedEduTimeFormatted)) {
-        if (!empty($completedEduTimeFormatted)) {
-            $completedEduTimeFormatted .= ' ';
-        }
-        $completedEduTimeFormatted .= $minutes . 'min';
-    }
+//     if ($minutes > 0 || empty($completedEduTimeFormatted)) {
+//         if (!empty($completedEduTimeFormatted)) {
+//             $completedEduTimeFormatted .= ' ';
+//         }
+//         $completedEduTimeFormatted .= $minutes . 'min';
+//     }
     
-    $lessons->pluck('tutor');
+//     $lessons->pluck('tutor');
 
-    $lessonsQuery = $lessons;
+//     $lessonsQuery = $lessons;
 
-    if (Request::has("status")) {
-        $status = Request::input("status");
-        $lessonsQuery = $lessonsQuery->where('status', $status); 
-    }
+//     if (Request::has("status")) {
+//         $status = Request::input("status");
+//         $lessonsQuery = $lessonsQuery->where('status', $status); 
+//     }
 
-    $filteredLessons = $lessonsQuery;
+//     $filteredLessons = $lessonsQuery;
 
-    return Inertia::render('Dashboard/index', [
-        'lessons' => $filteredLessons,
-        'countLessons' => $countLessons,
-        'completedEduTime' => $completedEduTimeFormatted,
-        'lessons_status' => Request::only(["status"]),
-    ]);
-})->middleware(['auth', 'verified'])->name('dashboard');
+//     return Inertia::render('Dashboard/index', [
+//         'lessons' => $filteredLessons,
+//         'countLessons' => $countLessons,
+//         'completedEduTime' => $completedEduTimeFormatted,
+//         'lessons_status' => Request::only(["status"]),
+//     ]);
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 
 Route::middleware('auth')->group(function () {

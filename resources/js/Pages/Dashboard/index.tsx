@@ -17,6 +17,15 @@ const Dashboard = () => {
         copiedPassword,
     } = UseDashboardController();
 
+    // const fetchLessons = async () => {
+    //     const response = await inertia.get(route('dashboard', { status }));
+    //     inertia.replace(response);
+    // };
+
+    // useEffect(() => {
+    //     fetchLessons();
+    // }, [status]);
+
     return (
         <AuthenticatedLayout user={pageProps.auth.user}>
             <Head title="Dashboard" />
@@ -29,7 +38,7 @@ const Dashboard = () => {
                 } `}
             >
                 {/* Left Section */}
-                <div className="col-span-8 space-y-6 md:col-span-8">
+                <div className="col-span-12 space-y-6 lg:col-span-8">
                     {/* Balance Section */}
                     <CreditBalanceCard balance={pageProps.auth.user.balance} />
 
@@ -51,15 +60,29 @@ const Dashboard = () => {
                     )}
                 </div>
 
-                {/* Right Section */}
-                <div className="col-span-8 space-y-6 md:col-span-4">
+                <div className="col-span-12 md:col-span-6 lg:hidden">
                     <NextLessonCard
                         lesson={pageProps.lessons[0]}
                         copiedZoomId={copiedZoomId}
                         copiedPassword={copiedPassword}
                         handleCopyToClipboard={handleCopyToClipboard}
                     />
+                </div>
+                <div className="col-span-12 md:col-span-6 lg:hidden">
+                    <StatisticsCard
+                        completedLessons={pageProps.countLessons.completed}
+                        educationTime={pageProps.completedEduTime}
+                    />
+                </div>
 
+                {/* Right Section */}
+                <div className="hidden lg:space-y-6 lg:block lg:col-span-4">
+                    <NextLessonCard
+                        lesson={pageProps.lessons[0]}
+                        copiedZoomId={copiedZoomId}
+                        copiedPassword={copiedPassword}
+                        handleCopyToClipboard={handleCopyToClipboard}
+                    />
                     <StatisticsCard
                         completedLessons={pageProps.countLessons.completed}
                         educationTime={pageProps.completedEduTime}

@@ -34,17 +34,17 @@ const CreditBalanceCard: React.FC<CreditBalanceCardProps> = ({ balance }) => {
 
     return (
         <Card>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col items-center justify-between gap-4 md:flex-row md:gap-0 ">
                 <div className="flex gap-4">
-                    <CreditIcon />
-                    <div>
+                    <CreditIcon className="hidden md:block" />
+                    <div className="flex flex-col items-center gap-2 md:items-start ">
                         <div className="flex items-center gap-4">
                             <h2 className="text-xl font-semibold text-secondary-dark">
                                 Credit balance:
                             </h2>
                             <HexagonIcon>{balance}</HexagonIcon>
                         </div>
-                        <p className="text-xs text-secondary-600">
+                        <p className="text-sm text-secondary-600">
                             *{balance} Credits {calculatedTime.hours} hours{" "}
                             {calculatedTime.minutes} min lesson
                         </p>

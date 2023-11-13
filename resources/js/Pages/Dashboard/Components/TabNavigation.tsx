@@ -21,8 +21,8 @@ export default function TabNavigation({
                 className
             }
         >
-            <div className="flex justify-between">
-                <div className="flex items-center gap-4">
+            <div className="flex flex-col justify-between md:flex-row">
+                <div className="flex items-center justify-between gap-4 md:justify-normal">
                     <h3 className="text-xl font-semibold text-secondary-dark">
                         My lessons:
                     </h3>
@@ -30,7 +30,7 @@ export default function TabNavigation({
                         Book a lesson
                     </OutlineButton>
                 </div>
-                <ul className="flex flex-wrap gap-2 -mb-px ">
+                <ul className="flex flex-wrap gap-2 -mb-px text-sm md:text-base ">
                     <li className="mr-2">
                         <TabLink
                             href="/dashboard?status=upcoming"

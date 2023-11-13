@@ -19,6 +19,8 @@ createInertiaApp({
     setup({ el, App, props }) {
         const root = createRoot(el);
 
+        delete el.dataset.page;
+
         root.render(
             <Provider store={store}>
                 <App {...props} />

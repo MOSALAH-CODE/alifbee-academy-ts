@@ -11,7 +11,7 @@ const Card = ({
     divider?: boolean;
 }>) => {
     return (
-        <div className="p-4 bg-white shadow-sm sm:rounded-lg">
+        <div className="p-4 bg-white rounded-lg shadow-sm">
             {header ? (
                 <header>
                     <div
