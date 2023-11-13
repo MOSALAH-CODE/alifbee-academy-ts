@@ -2,17 +2,20 @@ import { useSelector } from "react-redux";
 import TabLink from "./TabLink";
 import { selectPageProps } from "@/features/pagePropsSlice";
 import { OutlineButton } from "../../../Components/Buttons";
+import { Statuses } from "@/types";
 
 interface TabNavigationProps {
     status: string;
     className?: string;
+    countLessons: Statuses;
 }
 
 export default function TabNavigation({
     status,
     className = "",
+    countLessons,
 }: TabNavigationProps) {
-    const pageProps = useSelector(selectPageProps);
+    // const pageProps = useSelector(selectPageProps);
 
     return (
         <div
@@ -36,7 +39,7 @@ export default function TabNavigation({
                             href="/dashboard?status=upcoming"
                             active={status === "upcoming"}
                         >
-                            Upcoming ({pageProps.countLessons.upcoming})
+                            Upcoming ({countLessons.upcoming})
                         </TabLink>
                     </li>
                     <li className="mr-2">
@@ -44,7 +47,7 @@ export default function TabNavigation({
                             href="/dashboard?status=completed"
                             active={status === "completed"}
                         >
-                            Completed ({pageProps.countLessons.completed})
+                            Completed ({countLessons.completed})
                         </TabLink>
                     </li>
                     <li className="mr-2">
@@ -52,7 +55,7 @@ export default function TabNavigation({
                             href="/dashboard?status=canceled"
                             active={status === "canceled"}
                         >
-                            Canceled ({pageProps.countLessons.canceled})
+                            Canceled ({countLessons.canceled})
                         </TabLink>
                     </li>
                 </ul>

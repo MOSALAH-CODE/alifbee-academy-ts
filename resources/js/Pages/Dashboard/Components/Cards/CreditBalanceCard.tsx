@@ -30,7 +30,7 @@ const CreditBalanceCard: React.FC<CreditBalanceCardProps> = ({ balance }) => {
 
     useEffect(() => {
         calculateTime();
-    }, [balance]);
+    }, []);
 
     return (
         <Card>

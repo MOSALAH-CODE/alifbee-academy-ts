@@ -1,5 +1,4 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import withPageProps from "../withPageProps";
 import { Head } from "@inertiajs/react";
 import TabNavigation from "@/Pages/Dashboard/Components/TabNavigation";
 import UseDashboardController from "./DashboardController";
@@ -7,46 +6,60 @@ import StatisticsCard from "./Components/Cards/StatisticsCard";
 import NextLessonCard from "./Components/Cards/NextLessonCard";
 import LessonsCard from "./Components/Cards/LessonsCard";
 import CreditBalanceCard from "./Components/Cards/CreditBalanceCard";
+import { Lesson, Statuses, User } from "@/types";
 
-const Dashboard = () => {
-    const {
-        pageProps,
-        status,
-        handleCopyToClipboard,
-        copiedZoomId,
-        copiedPassword,
-    } = UseDashboardController();
+interface HomeProps {
+    auth: {
+        user: User;
+    };
+    lessons: Lesson[];
+    countLessons: Statuses;
+    completedEduTime: string;
+    lessons_status: {
+        status: string;
+    };
+}
 
-    // const fetchLessons = async () => {
-    //     const response = await inertia.get(route('dashboard', { status }));
-    //     inertia.replace(response);
-    // };
+const Dashboard = ({
+    auth,
+    completedEduTime,
+    countLessons,
+    lessons,
+    lessons_status,
+}: HomeProps) => {
+    const { status, handleCopyToClipboard, copiedZoomId, copiedPassword } =
+        UseDashboardController();
 
-    // useEffect(() => {
-    //     fetchLessons();
-    // }, [status]);
+    console.log(auth);
+    console.log(completedEduTime);
+    console.log(countLessons);
+    console.log(lessons);
+    console.log(lessons_status);
 
     return (
-        <AuthenticatedLayout user={pageProps.auth.user}>
+        <AuthenticatedLayout user={auth.user}>
             <Head title="Dashboard" />
 
             <div
                 className={`grid gap-6 ${
-                    pageProps.auth?.user?.lessons
-                        ? "grid-cols-12"
-                        : "grid-cols-1"
+                    auth?.user?.lessons ? "grid-cols-12" : "grid-cols-1"
                 } `}
             >
                 {/* Left Section */}
                 <div className="col-span-12 space-y-6 lg:col-span-8">
                     {/* Balance Section */}
-                    <CreditBalanceCard balance={pageProps.auth.user.balance} />
+                    <CreditBalanceCard balance={auth.user.balance} />
 
                     {/* Lessons Section */}
-                    {pageProps.auth?.user?.lessons ? (
+                    {auth?.user?.lessons ? (
                         <LessonsCard
-                            header={<TabNavigation status={status} />}
-                            lessons={pageProps.lessons}
+                            header={
+                                <TabNavigation
+                                    countLessons={countLessons}
+                                    status={status}
+                                />
+                            }
+                            lessons={lessons}
                             divider={false}
                         />
                     ) : (
@@ -62,7 +75,7 @@ const Dashboard = () => {
 
                 <div className="col-span-12 md:col-span-6 lg:hidden">
                     <NextLessonCard
-                        lesson={pageProps.lessons[0]}
+                        lesson={lessons[1]}
                         copiedZoomId={copiedZoomId}
                         copiedPassword={copiedPassword}
                         handleCopyToClipboard={handleCopyToClipboard}
@@ -70,22 +83,22 @@ const Dashboard = () => {
                 </div>
                 <div className="col-span-12 md:col-span-6 lg:hidden">
                     <StatisticsCard
-                        completedLessons={pageProps.countLessons.completed}
-                        educationTime={pageProps.completedEduTime}
+                        completedLessons={countLessons.completed}
+                        educationTime={completedEduTime}
                     />
                 </div>
 
                 {/* Right Section */}
                 <div className="hidden lg:space-y-6 lg:block lg:col-span-4">
                     <NextLessonCard
-                        lesson={pageProps.lessons[0]}
+                        lesson={lessons[1]}
                         copiedZoomId={copiedZoomId}
                         copiedPassword={copiedPassword}
                         handleCopyToClipboard={handleCopyToClipboard}
                     />
                     <StatisticsCard
-                        completedLessons={pageProps.countLessons.completed}
-                        educationTime={pageProps.completedEduTime}
+                        completedLessons={countLessons.completed}
+                        educationTime={completedEduTime}
                     />
                 </div>
             </div>
@@ -93,4 +106,4 @@ const Dashboard = () => {
     );
 };
 
-export default withPageProps(Dashboard);
+export default Dashboard;

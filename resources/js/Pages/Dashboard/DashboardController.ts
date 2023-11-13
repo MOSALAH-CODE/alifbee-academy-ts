@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 function UseDashboardController() {
-    const pageProps = useSelector(selectPageProps);
+    // const pageProps = useSelector(selectPageProps);
 
     const [status, setStatus] = useState("");
 
-    useEffect(() => {
-        setStatus(pageProps.lessons_status.status);
-    }, [pageProps]);
+    // useEffect(() => {
+    //     setStatus(pageProps.lessons_status.status);
+    // }, [pageProps]);
 
     const [copiedZoomId, setCopiedZoomId] = useState(false);
     const [copiedPassword, setCopiedPassword] = useState(false);
@@ -49,10 +49,9 @@ function UseDashboardController() {
 
         document.body.removeChild(textArea);
     };
-    
 
     return {
-        pageProps,
+        // pageProps,
         status,
         handleCopyToClipboard,
         copiedZoomId,
