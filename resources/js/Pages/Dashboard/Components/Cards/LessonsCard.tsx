@@ -1,5 +1,5 @@
 // LessonsCard.tsx
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import NoLessonsIcon from "@/Components/Icons/NoLessonsIcon";
 import { Link } from "@inertiajs/react";
 import { PrimaryButton } from "@/Components/Buttons";
@@ -14,11 +14,7 @@ interface LessonsCardProps {
     divider?: boolean;
 }
 
-const LessonsCard: React.FC<LessonsCardProps> = ({
-    lessons,
-    header,
-    divider = true,
-}) => {
+const LessonsCard = ({ lessons, header, divider = true }: LessonsCardProps) => {
     return (
         <Card header={header} divider={divider}>
             <div className="grid grid-cols-1 gap-4 justify-items-center">

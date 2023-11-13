@@ -11,7 +11,7 @@ interface CreditBalanceCardProps {
     balance: number;
 }
 
-const CreditBalanceCard: React.FC<CreditBalanceCardProps> = ({ balance }) => {
+const CreditBalanceCard = ({ balance }: CreditBalanceCardProps) => {
     const MINUTES_PER_CREDIT = 30;
 
     // State to hold calculated time

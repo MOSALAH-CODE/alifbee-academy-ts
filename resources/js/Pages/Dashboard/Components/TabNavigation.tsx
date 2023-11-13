@@ -1,15 +1,17 @@
 import { useSelector } from "react-redux";
-import TabLink from "./TabLink";
 import { selectPageProps } from "@/features/pagePropsSlice";
 import { OutlineButton } from "../../../Components/Buttons";
+import TabButton from "./TabButton";
 
 interface TabNavigationProps {
     status: string;
+    setStatus: (status: string) => void;
     className?: string;
 }
 
 export default function TabNavigation({
     status,
+    setStatus,
     className = "",
 }: TabNavigationProps) {
     const pageProps = useSelector(selectPageProps);
@@ -32,28 +34,28 @@ export default function TabNavigation({
                 </div>
                 <ul className="flex flex-wrap gap-2 -mb-px text-sm md:text-base ">
                     <li className="mr-2">
-                        <TabLink
-                            href="/dashboard?status=upcoming"
+                        <TabButton
+                            onClick={() => setStatus("upcoming")}
                             active={status === "upcoming"}
                         >
                             Upcoming ({pageProps.countLessons.upcoming})
-                        </TabLink>
+                        </TabButton>
                     </li>
                     <li className="mr-2">
-                        <TabLink
-                            href="/dashboard?status=completed"
+                        <TabButton
+                            onClick={() => setStatus("completed")}
                             active={status === "completed"}
                         >
                             Completed ({pageProps.countLessons.completed})
-                        </TabLink>
+                        </TabButton>
                     </li>
                     <li className="mr-2">
-                        <TabLink
-                            href="/dashboard?status=canceled"
+                        <TabButton
+                            onClick={() => setStatus("canceled")}
                             active={status === "canceled"}
                         >
                             Canceled ({pageProps.countLessons.canceled})
-                        </TabLink>
+                        </TabButton>
                     </li>
                 </ul>
             </div>
