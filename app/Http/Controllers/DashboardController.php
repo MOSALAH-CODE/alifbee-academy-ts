@@ -49,6 +49,7 @@ class DashboardController extends Controller
 
     private function calculateCompletedEduTime($lessons)
     {
+    
         $completedEduTimeInMinutes = 0;
 
         foreach ($lessons as $lesson) {
@@ -62,7 +63,11 @@ class DashboardController extends Controller
 
         [$days, $hours, $minutes] = $this->formatTime($completedEduTimeInMinutes);
 
-        return sprintf('%dd %dh %dmin', $days, $hours, $minutes);
+        return sprintf('%s%s%s',
+        $days > 0 ? $days . 'd ' : '',
+        $hours > 0 ? $hours . 'h ' : '',
+        $minutes > 0 ? $minutes . 'min' : ''
+        );
     }
 
     private function formatTime($completedEduTimeInMinutes)
