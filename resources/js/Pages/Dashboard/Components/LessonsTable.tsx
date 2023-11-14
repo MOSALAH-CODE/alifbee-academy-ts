@@ -79,6 +79,7 @@ const getStatusSortValue = (status: string) => {
 
 interface LessonsTableProps {
     lessons: Lesson[];
+    status: string;
     className?: string;
     disabled?: boolean;
     active?: boolean;
@@ -87,14 +88,13 @@ interface LessonsTableProps {
 
 export default function LessonsTable({
     lessons,
+    status,
     className = "",
     disabled,
     active,
     children,
     ...props
 }: LessonsTableProps) {
-    const pageProps = useSelector(selectPageProps);
-
     const [showMore, setShowMore] = useState(false);
 
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
@@ -164,7 +164,7 @@ export default function LessonsTable({
                                     }}
                                 >
                                     <p>Status</p>
-                                    {!pageProps.lessons_status.status && (
+                                    {!status && (
                                         <SortIcon
                                             order={sortBy === "status"}
                                             asc={sortOrder === "asc"}
