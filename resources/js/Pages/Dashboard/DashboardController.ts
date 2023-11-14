@@ -1,27 +1,37 @@
 import { selectPageProps } from "@/features/pagePropsSlice";
+import { Lesson } from "@/types";
+import { usePage } from "@inertiajs/react";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 function UseDashboardController() {
+    const page = usePage();
     const pageProps = useSelector(selectPageProps);
 
-    // const [status, setStatus] = useState("");
-
-    // useEffect(() => {
-    //     setStatus(pageProps.lessons_status.status);
-    // }, [pageProps]);
-
+    const [filteredLessons, setFilteredLessons] = useState<Lesson[]>([]);
     const [status, setStatus] = useState("upcoming");
-    const [filteredLessons, setFilteredLessons] = useState(pageProps.lessons);
-
-    useEffect(() => {
-        setFilteredLessons(
-            pageProps.lessons.filter((lesson) => lesson.status.includes(status))
-        );
-    }, [status, pageProps.lessons]);
+    const [loading, setLoading] = useState(true);
 
     const [copiedZoomId, setCopiedZoomId] = useState(false);
     const [copiedPassword, setCopiedPassword] = useState(false);
+
+    useEffect(() => {
+        // setLoading(true);
+        axios
+            .get("/api/dashboard/lessons", {
+                params: {
+                    status: status,
+                },
+            })
+            .then((response) => {
+                setFilteredLessons(response.data.lessons);
+            })
+            .catch((error) => {
+                console.error("Error fetching lessons:", error);
+            })
+            .finally(() => setLoading(false));
+    }, [status]);
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -64,6 +74,7 @@ function UseDashboardController() {
         status,
         setStatus,
         filteredLessons,
+        loading,
         handleCopyToClipboard,
         copiedZoomId,
         copiedPassword,

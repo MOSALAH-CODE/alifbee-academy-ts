@@ -10,16 +10,26 @@ import ControlPointRoundedIcon from "@mui/icons-material/ControlPointRounded";
 
 interface LessonsCardProps {
     lessons?: Lesson[];
+    status: string;
     header?: ReactNode;
     divider?: boolean;
 }
 
-const LessonsCard = ({ lessons, header, divider = true }: LessonsCardProps) => {
+const LessonsCard = ({
+    lessons,
+    status,
+    header,
+    divider = true,
+}: LessonsCardProps) => {
     return (
         <Card header={header} divider={divider}>
             <div className="grid grid-cols-1 gap-4 justify-items-center">
                 {lessons?.length ? (
-                    <LessonsTable lessons={lessons} className="mt-3" />
+                    <LessonsTable
+                        lessons={lessons}
+                        status={status}
+                        className="mt-3"
+                    />
                 ) : (
                     <div className="grid grid-cols-1 gap-4 justify-items-center">
                         <NoLessonsIcon />

@@ -31,7 +31,7 @@ class Lessons extends Model
      * @var array<int, string>
      */
     protected $hidden = [
-        // 'password',
+        'created_at',
     ];
 
     /**
@@ -47,5 +47,19 @@ class Lessons extends Model
 
     public function tutor() {
         return $this->hasOne(User::class, 'id', 'tutor_id');
+    }
+
+    /**
+     * Scope a query to only include lessons of a specific status for a given user.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $status
+     * @param  int  $userId
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeFilteredLessonsByStatus($query, $status, $userId)
+    {
+        return $query->where('user_id', $userId)
+                     ->where('status', $status);
     }
 }

@@ -2,24 +2,56 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
+use App\Models\Lessons;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
-    public function index(Request $request)
+    // public function __invoke(Request $request)
+    // {
+    //     // var_dump(Auth::user());
+        
+    //     $lessons = Lessons::filteredLessonsByStatus($request->only(['status']), 8)
+    //                      ->with('tutor')
+    //                      ->get();
+
+    //     return response()->json(['lessons' => $lessons], 200);
+    // }
+    
+
+    public function index()
     {
-        $lessons = auth()->user()->lessons->load('tutor');
+        $userId = auth()->id();
+        $lessons = Lessons::where('user_id', $userId)->with('tutor')->get();
+
 
         $countLessons = $this->countLessons($lessons);
         $completedEduTimeFormatted = $this->calculateCompletedEduTime($lessons);
+        
+        $nextLesson = Lessons::where('user_id', $userId)
+        ->where('status', 'upcoming')
+        ->with('tutor')
+        ->orderBy('start_date', 'asc')
+        ->get()->first();
 
         return Inertia::render('Dashboard/index', [
-            'lessons' => $lessons,
             'countLessons' => $countLessons,
             'completedEduTime' => $completedEduTimeFormatted,
-            'lessons_status' => $request->only(["status"]),
+            'nextLesson' => $nextLesson,
         ]);
+    }
+
+    public function show(Request $request)
+    {        
+        $lessons = Lessons::filteredLessonsByStatus($request->only(['status']), Auth::user()->id)
+                         ->with('tutor')
+                         ->get();
+
+        return response()->json(['lessons' => $lessons], 200);
     }
     
     private function countLessons($lessons)

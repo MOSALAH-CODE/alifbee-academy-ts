@@ -1,40 +1,30 @@
 export class User {
-    id: number;
     name: string;
     email: string;
     email_verified_at: string;
     profile_picture: string;
     balance: number;
-    lessons: Lesson[];
 
     constructor(
-        id: number,
         name: string,
         email: string,
         email_verified_at: string,
         profile_picture: string,
-        balance: number,
-        lessons: Lesson[]
+        balance: number
     ) {
-        this.id = id;
         this.name = name;
         this.email = email;
         this.email_verified_at = email_verified_at;
         this.profile_picture = profile_picture;
         this.balance = balance;
-        this.lessons = lessons;
     }
     static fromJson(json: any): User {
         return new User(
-            json?.id,
             json?.name,
             json?.email,
             json?.email_verified_at,
             json?.profile_picture,
-            json?.balance,
-            json?.lessons?.map((lessonJson: any) =>
-                Lesson.fromJson(lessonJson)
-            ) || [] // Map lessons
+            json?.balance
         );
     }
 }
@@ -109,12 +99,13 @@ export type PageProps = {
     auth: {
         user: User;
     };
-    lessons: Lesson[];
+    // lessons: Lesson[];
     countLessons: Statuses;
     completedEduTime: string;
-    lessons_status: {
-        status: string;
-    };
+    // lessons_status: {
+    //     status: string;
+    // };
+    nextLesson: Lesson;
 };
 
 // Create a factory function to convert JSON data to PageProps
@@ -133,8 +124,7 @@ export const createPageProps = (json: any): PageProps => {
         },
         countLessons: Statuses.fromJson(json.countLessons),
         completedEduTime: json.completedEduTime,
-        lessons,
-        lessons_status: { status: json.lessons_status?.status || "" },
+        nextLesson: json.nextLesson,
     };
 };
 

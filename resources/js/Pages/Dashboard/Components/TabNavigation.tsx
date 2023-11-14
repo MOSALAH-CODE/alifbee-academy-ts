@@ -2,6 +2,9 @@ import { useSelector } from "react-redux";
 import { selectPageProps } from "@/features/pagePropsSlice";
 import { OutlineButton } from "../../../Components/Buttons";
 import TabButton from "./TabButton";
+import { Lesson } from "@/types";
+import axios from "axios";
+import { useEffect } from "react";
 
 interface TabNavigationProps {
     status: string;
