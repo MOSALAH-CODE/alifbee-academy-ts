@@ -6,6 +6,7 @@ import {
     PropsWithChildren,
     Dispatch,
     SetStateAction,
+    ReactNode,
 } from "react";
 import { Link, InertiaLinkProps } from "@inertiajs/react";
 import { Transition } from "@headlessui/react";
@@ -127,8 +128,33 @@ const DropdownLink = ({
     );
 };
 
+const DropdownButton = ({
+    className = "",
+    onClick,
+    children,
+    ...props
+}: {
+    className?: string;
+    onClick: () => void;
+    children: ReactNode;
+}) => {
+    return (
+        <button
+            onClick={onClick}
+            {...props}
+            className={
+                "block w-full rounded px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-300 focus:outline-none focus:bg-gray-300 transition duration-150 ease-in-out " +
+                className
+            }
+        >
+            {children}
+        </button>
+    );
+};
+
 Dropdown.Trigger = Trigger;
 Dropdown.Content = Content;
 Dropdown.Link = DropdownLink;
+Dropdown.Button = DropdownButton;
 
 export default Dropdown;

@@ -46,6 +46,9 @@ const Dashboard = () => {
                             lessons={filteredLessons}
                             status={status}
                             divider={false}
+                            copiedZoomId={copiedZoomId}
+                            copiedPassword={copiedPassword}
+                            handleCopyToClipboard={handleCopyToClipboard}
                         />
                     ) : (
                         <LessonsCard

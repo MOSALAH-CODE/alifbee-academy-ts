@@ -1,5 +1,5 @@
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { Avatar } from "@mui/material";
+import { Avatar, Tooltip, Zoom } from "@mui/material";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { Lesson } from "@/types";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
@@ -10,8 +10,10 @@ import SortIcon from "../../../Components/Icons/SortIcon";
 import { useState } from "react";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
-import { useSelector } from "react-redux";
-import { selectPageProps } from "@/features/pagePropsSlice";
+import DoneRoundedIcon from "@mui/icons-material/DoneRounded";
+import Modal from "@/Components/Modal";
+import HexagonIcon from "@/Components/Icons/HexagonIcon";
+import CopyIcon from "@/Components/Icons/CopyIcon";
 
 function formatLessonDate(dateString: string) {
     const date = new Date(dateString);
@@ -84,6 +86,9 @@ interface LessonsTableProps {
     disabled?: boolean;
     active?: boolean;
     children?: React.ReactNode;
+    copiedZoomId?: boolean;
+    copiedPassword?: boolean;
+    handleCopyToClipboard?: (text: string, isZoomId: boolean) => void;
 }
 
 export default function LessonsTable({
@@ -93,6 +98,9 @@ export default function LessonsTable({
     disabled,
     active,
     children,
+    copiedZoomId,
+    copiedPassword,
+    handleCopyToClipboard,
     ...props
 }: LessonsTableProps) {
     const [showMore, setShowMore] = useState(false);
@@ -116,6 +124,14 @@ export default function LessonsTable({
     });
 
     const slicedLessons = showMore ? sortedLessons : sortedLessons.slice(0, 3);
+
+    const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = (lesson: Lesson) => {
+        setSelectedLesson(lesson);
+        setIsModalOpen(true);
+    };
 
     return (
         <div className={"relative overflow-x-auto w-full " + className}>
@@ -263,8 +279,10 @@ export default function LessonsTable({
                                             </Dropdown.Trigger>
 
                                             <Dropdown.Content width="1">
-                                                <Dropdown.Link
-                                                    href={route("profile.edit")}
+                                                <Dropdown.Button
+                                                    onClick={() =>
+                                                        openModal(lesson)
+                                                    }
                                                 >
                                                     <div className="flex items-center gap-2 text-secondary-dark">
                                                         <RemoveRedEyeOutlinedIcon
@@ -277,7 +295,8 @@ export default function LessonsTable({
                                                             View detail
                                                         </p>
                                                     </div>
-                                                </Dropdown.Link>
+                                                </Dropdown.Button>
+
                                                 <Dropdown.Link
                                                     href={route("profile.edit")}
                                                 >
@@ -321,6 +340,193 @@ export default function LessonsTable({
                         </button>
                     )}
                 </div>
+            )}
+
+            {isModalOpen && selectedLesson && (
+                <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                    <div className="p-6">
+                        <h2>Lesson Details</h2>
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full divide-y divide-gray-200">
+                                <tbody className="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td className="h-16">
+                                            <div className="flex gap-2">
+                                                <HexagonIcon
+                                                    width={24}
+                                                    height={24}
+                                                    fill="#F0EEF0"
+                                                >
+                                                    <DoneRoundedIcon />
+                                                </HexagonIcon>
+                                                <p>Status</p>
+                                            </div>
+                                        </td>
+                                        <td className="h-16">
+                                            <div
+                                                className={`px-2 py-1 capitalize border rounded whitespace-nowrap ${getStatusColor(
+                                                    selectedLesson.status
+                                                )} text-secondary-dark`}
+                                                style={{ width: "100px" }}
+                                            >
+                                                <FiberManualRecordIcon
+                                                    className={`mr-1 ${getIconColor(
+                                                        selectedLesson.status
+                                                    )}`}
+                                                    style={{ fontSize: "8px" }}
+                                                />
+                                                {selectedLesson.status}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td className="h-16">
+                                            <div className="flex gap-2">
+                                                <HexagonIcon
+                                                    width={24}
+                                                    height={24}
+                                                    fill="#F0EEF0"
+                                                >
+                                                    <DoneRoundedIcon />
+                                                </HexagonIcon>
+                                                <p>Date/Time</p>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <p>
+                                                {formatLessonTime(
+                                                    selectedLesson.start_date,
+                                                    selectedLesson.end_date
+                                                )}
+                                            </p>
+                                            <p>
+                                                {formatLessonDate(
+                                                    selectedLesson.start_date
+                                                )}
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td className="h-16">
+                                            <div className="flex gap-2">
+                                                <HexagonIcon
+                                                    width={24}
+                                                    height={24}
+                                                    fill="#F0EEF0"
+                                                >
+                                                    <DoneRoundedIcon />
+                                                </HexagonIcon>
+                                                <p>Tutor</p>
+                                            </div>
+                                        </td>
+                                        <td>{selectedLesson?.tutor?.name}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="h-16">
+                                            <div className="flex gap-2">
+                                                <HexagonIcon
+                                                    width={24}
+                                                    height={24}
+                                                    fill="#F0EEF0"
+                                                >
+                                                    <DoneRoundedIcon />
+                                                </HexagonIcon>
+                                                <p>Price</p>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {selectedLesson.credit_cost} credits
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td className="h-16">
+                                            <div className="flex gap-2">
+                                                <HexagonIcon
+                                                    width={24}
+                                                    height={24}
+                                                    fill="#F0EEF0"
+                                                >
+                                                    <DoneRoundedIcon />
+                                                </HexagonIcon>
+                                                <p>Zoom link</p>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className="grid">
+                                                <div className="flex items-center gap-2">
+                                                    <img
+                                                        className="flex-none"
+                                                        src="/icons/zoom.png"
+                                                        width={16}
+                                                        height={16} // Add height to maintain aspect ratio
+                                                        alt=""
+                                                    />
+                                                    <p>
+                                                        <span>Meet ID:</span>{" "}
+                                                        {selectedLesson.meet_id}
+                                                    </p>
+                                                    <Tooltip
+                                                        open={copiedZoomId}
+                                                        title="Copied"
+                                                        TransitionComponent={
+                                                            Zoom
+                                                        }
+                                                        placement="top"
+                                                        arrow
+                                                        PopperProps={{
+                                                            modifiers: [
+                                                                {
+                                                                    name: "offset",
+                                                                    options: {
+                                                                        offset: [
+                                                                            0,
+                                                                            -5,
+                                                                        ],
+                                                                    },
+                                                                },
+                                                            ],
+                                                        }}
+                                                    >
+                                                        <button
+                                                            onClick={() => {
+                                                                handleCopyToClipboard(
+                                                                    selectedLesson?.meet_id,
+                                                                    true
+                                                                );
+                                                            }}
+                                                            className={`${
+                                                                copiedZoomId
+                                                                    ? "jelly-anim"
+                                                                    : ""
+                                                            }`}
+                                                        >
+                                                            <CopyIcon />
+                                                        </button>
+                                                    </Tooltip>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <img
+                                                        className="flex-none"
+                                                        src="/icons/zoom.png"
+                                                        width={16}
+                                                        height={16} // Add height to maintain aspect ratio
+                                                        alt=""
+                                                    />
+                                                    <p>
+                                                        <span>Password:</span>{" "}
+                                                        {
+                                                            selectedLesson.password
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </Modal>
             )}
         </div>
     );
