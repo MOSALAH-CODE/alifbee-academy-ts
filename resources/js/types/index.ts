@@ -1,20 +1,17 @@
 export class User {
     name: string;
     email: string;
-    email_verified_at: string;
     profile_picture: string;
     balance: number;
 
     constructor(
         name: string,
         email: string,
-        email_verified_at: string,
         profile_picture: string,
         balance: number
     ) {
         this.name = name;
         this.email = email;
-        this.email_verified_at = email_verified_at;
         this.profile_picture = profile_picture;
         this.balance = balance;
     }
@@ -22,7 +19,6 @@ export class User {
         return new User(
             json?.name,
             json?.email,
-            json?.email_verified_at,
             json?.profile_picture,
             json?.balance
         );
@@ -33,8 +29,8 @@ export class Lesson {
     id: number;
     user_id: number;
     tutor_id: number;
-    start_date: string;
-    end_date: string;
+    start_date: Date;
+    end_date: Date;
     status: string;
     meet_id: string;
     password: string;
@@ -45,8 +41,8 @@ export class Lesson {
         id: number,
         user_id: number,
         tutor_id: number,
-        start_date: string,
-        end_date: string,
+        start_date: Date,
+        end_date: Date,
         status: string,
         meet_id: string,
         password: string,
@@ -69,8 +65,8 @@ export class Lesson {
             json?.id,
             json?.user_id,
             json?.tutor_id,
-            json?.start_date,
-            json?.end_date,
+            new Date(json?.start_date),
+            new Date(json?.end_date),
             json?.status,
             json?.meet_id,
             json?.password,
@@ -114,17 +110,13 @@ export const createPageProps = (json: any): PageProps => {
         json.lessons = Object.values(json.lessons);
     }
 
-    const lessons = (json.lessons || []).map((lessonJson: any) =>
-        Lesson.fromJson(lessonJson)
-    );
-
     return {
         auth: {
             user: User.fromJson(json.auth.user),
         },
         countLessons: Statuses.fromJson(json.countLessons),
         completedEduTime: json.completedEduTime,
-        nextLesson: json.nextLesson,
+        nextLesson: Lesson.fromJson(json.nextLesson),
     };
 };
 

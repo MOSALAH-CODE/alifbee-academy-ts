@@ -1,4 +1,3 @@
-// LessonsCard.tsx
 import { ReactNode } from "react";
 import NoLessonsIcon from "@/Components/Icons/NoLessonsIcon";
 import { Link } from "@inertiajs/react";
@@ -13,9 +12,6 @@ interface LessonsCardProps {
     status: string;
     header?: ReactNode;
     divider?: boolean;
-    copiedZoomId?: boolean;
-    copiedPassword?: boolean;
-    handleCopyToClipboard?: (text: string, isZoomId: boolean) => void;
 }
 
 const LessonsCard = ({
@@ -23,9 +19,6 @@ const LessonsCard = ({
     status,
     header,
     divider = true,
-    copiedZoomId,
-    copiedPassword,
-    handleCopyToClipboard,
 }: LessonsCardProps) => {
     return (
         <Card header={header} divider={divider}>
@@ -34,9 +27,6 @@ const LessonsCard = ({
                     <LessonsTable
                         lessons={lessons}
                         status={status}
-                        copiedZoomId={copiedZoomId}
-                        copiedPassword={copiedPassword}
-                        handleCopyToClipboard={handleCopyToClipboard}
                         className="mt-3"
                     />
                 ) : (

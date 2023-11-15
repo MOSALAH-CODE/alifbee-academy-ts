@@ -1,20 +1,15 @@
 import { selectPageProps } from "@/features/pagePropsSlice";
-import { Lesson } from "@/types";
-import { usePage } from "@inertiajs/react";
+import { Lesson, User } from "@/types";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 function UseDashboardController() {
-    const page = usePage();
     const pageProps = useSelector(selectPageProps);
 
     const [filteredLessons, setFilteredLessons] = useState<Lesson[]>([]);
     const [status, setStatus] = useState("upcoming");
     const [loading, setLoading] = useState(true);
-
-    const [copiedZoomId, setCopiedZoomId] = useState(false);
-    const [copiedPassword, setCopiedPassword] = useState(false);
 
     useEffect(() => {
         // setLoading(true);
@@ -25,7 +20,24 @@ function UseDashboardController() {
                 },
             })
             .then((response) => {
-                setFilteredLessons(response.data.lessons);
+                const lessons: Lesson[] = [];
+                response.data.lessons.forEach((lesson: Lesson) => {
+                    lessons.push(
+                        new Lesson(
+                            lesson?.id,
+                            lesson?.user_id,
+                            lesson?.tutor_id,
+                            new Date(lesson?.start_date),
+                            new Date(lesson?.end_date),
+                            lesson?.status,
+                            lesson?.meet_id,
+                            lesson?.password,
+                            lesson?.credit_cost,
+                            User.fromJson(lesson?.tutor) || null
+                        )
+                    );
+                });
+                setFilteredLessons(lessons);
             })
             .catch((error) => {
                 console.error("Error fetching lessons:", error);
@@ -33,51 +45,12 @@ function UseDashboardController() {
             .finally(() => setLoading(false));
     }, [status]);
 
-    useEffect(() => {
-        const timeoutId = setTimeout(() => {
-            setCopiedZoomId(false);
-        }, 1000);
-
-        return () => clearTimeout(timeoutId);
-    }, [copiedZoomId]);
-
-    useEffect(() => {
-        const timeoutId = setTimeout(() => {
-            setCopiedPassword(false);
-        }, 1000);
-
-        return () => clearTimeout(timeoutId);
-    }, [copiedPassword]);
-
-    const handleCopyToClipboard = (text: string, isZoomId: boolean) => {
-        const textArea = document.createElement("textarea");
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.select();
-
-        try {
-            document.execCommand("copy");
-            if (isZoomId) {
-                setCopiedZoomId(true);
-            } else {
-                setCopiedPassword(true);
-            }
-        } catch (err) {
-            console.error("Failed to copy text: ", err);
-        }
-
-        document.body.removeChild(textArea);
-    };
-
     return {
         pageProps,
         status,
         setStatus,
         filteredLessons,
         loading,
-        handleCopyToClipboard,
-        copiedZoomId,
-        copiedPassword,
     };
 }
 

@@ -44,6 +44,10 @@ export default {
                     800: "#543655",
                     900: "#422a47",
                 },
+                danger: {
+                    light: "#FBE9E9",
+                    DEFAULT: "#E5383D",
+                },
             },
             fontFamily: {
                 sans: ["Roboto", "Figtree", ...defaultTheme.fontFamily.sans],

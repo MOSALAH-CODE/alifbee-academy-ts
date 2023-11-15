@@ -9,16 +9,8 @@ import LessonsCard from "./Components/Cards/LessonsCard";
 import CreditBalanceCard from "./Components/Cards/CreditBalanceCard";
 
 const Dashboard = () => {
-    const {
-        pageProps,
-        status,
-        setStatus,
-        filteredLessons,
-        loading,
-        handleCopyToClipboard,
-        copiedZoomId,
-        copiedPassword,
-    } = UseDashboardController();
+    const { pageProps, status, setStatus, filteredLessons, loading } =
+        UseDashboardController();
 
     return (
         <AuthenticatedLayout user={pageProps.auth.user} loading={loading}>
@@ -46,9 +38,6 @@ const Dashboard = () => {
                             lessons={filteredLessons}
                             status={status}
                             divider={false}
-                            copiedZoomId={copiedZoomId}
-                            copiedPassword={copiedPassword}
-                            handleCopyToClipboard={handleCopyToClipboard}
                         />
                     ) : (
                         <LessonsCard
@@ -65,12 +54,7 @@ const Dashboard = () => {
                 {filteredLessons.length > 0 && (
                     <>
                         <div className="col-span-12 md:col-span-6 lg:hidden">
-                            <NextLessonCard
-                                lesson={pageProps.nextLesson}
-                                copiedZoomId={copiedZoomId}
-                                copiedPassword={copiedPassword}
-                                handleCopyToClipboard={handleCopyToClipboard}
-                            />
+                            <NextLessonCard lesson={pageProps.nextLesson} />
                         </div>
                         <div className="col-span-12 md:col-span-6 lg:hidden">
                             <StatisticsCard
@@ -83,12 +67,7 @@ const Dashboard = () => {
 
                         {/* Right Section */}
                         <div className="hidden lg:space-y-6 lg:block lg:col-span-4">
-                            <NextLessonCard
-                                lesson={pageProps.nextLesson}
-                                copiedZoomId={copiedZoomId}
-                                copiedPassword={copiedPassword}
-                                handleCopyToClipboard={handleCopyToClipboard}
-                            />
+                            <NextLessonCard lesson={pageProps.nextLesson} />
                             <StatisticsCard
                                 completedLessons={
                                     pageProps.countLessons.completed
