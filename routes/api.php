@@ -19,6 +19,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// Route::middleware('auth:sanctum')->group(function () {
+//     Route::delete('/lessons/{id}/cancel', [LessonsController::class, 'cancelLesson']);
+// });
+
 // Route::middleware('auth.session')->get('/dashboard', DashboardController::class)->middleware(['api']);
 
 // Route::get('/dashboard', DashboardController::class);

@@ -36,7 +36,7 @@ const StatisticsCard = ({
                             Education time
                         </p>
                         <h3 className="text-lg font-bold text-secondary-dark">
-                            {educationTime}
+                            {educationTime ? `${educationTime}` : "0min"}
                         </h3>
                     </div>
                 </div>

@@ -29,35 +29,35 @@ export class Lesson {
     id: number;
     user_id: number;
     tutor_id: number;
+    credit_cost: number;
     start_date: Date;
     end_date: Date;
     status: string;
     meet_id: string;
     password: string;
-    credit_cost: number;
     tutor: User;
 
     constructor(
         id: number,
         user_id: number,
         tutor_id: number,
+        credit_cost: number,
         start_date: Date,
         end_date: Date,
         status: string,
         meet_id: string,
         password: string,
-        credit_cost: number,
         tutor: User
     ) {
         this.id = id;
         this.user_id = user_id;
         this.tutor_id = tutor_id;
+        this.credit_cost = credit_cost;
         this.start_date = start_date;
         this.end_date = end_date;
         this.status = status;
         this.meet_id = meet_id;
         this.password = password;
-        this.credit_cost = credit_cost;
         this.tutor = tutor;
     }
     static fromJson(json: any): Lesson {
@@ -65,14 +65,21 @@ export class Lesson {
             json?.id,
             json?.user_id,
             json?.tutor_id,
+            json?.credit_cost,
             new Date(json?.start_date),
             new Date(json?.end_date),
-            json?.status,
+            Lesson.calculateStatus(json),
             json?.meet_id,
             json?.password,
-            json?.credit_cost,
             User.fromJson(json?.tutor) || null // Convert tutor data to User
         );
+    }
+    private static calculateStatus(json: any): string {
+        if (json?.status && json?.start_date) {
+            const startDate = new Date(json.start_date);
+            return startDate < new Date() ? "completed" : "upcoming";
+        }
+        return "canceled";
     }
 }
 
@@ -101,7 +108,7 @@ export type PageProps = {
     // lessons_status: {
     //     status: string;
     // };
-    nextLesson: Lesson;
+    nextLesson: Lesson | null;
 };
 
 // Create a factory function to convert JSON data to PageProps
@@ -110,13 +117,17 @@ export const createPageProps = (json: any): PageProps => {
         json.lessons = Object.values(json.lessons);
     }
 
+    const nexLesson: Lesson | null = json.nextLesson
+        ? Lesson.fromJson(json.nextLesson)
+        : null;
+
     return {
         auth: {
             user: User.fromJson(json.auth.user),
         },
         countLessons: Statuses.fromJson(json.countLessons),
         completedEduTime: json.completedEduTime,
-        nextLesson: Lesson.fromJson(json.nextLesson),
+        nextLesson: nexLesson,
     };
 };
 

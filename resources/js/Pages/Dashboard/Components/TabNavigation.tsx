@@ -36,30 +36,36 @@ export default function TabNavigation({
                     </OutlineButton>
                 </div>
                 <ul className="flex flex-wrap gap-2 -mb-px text-sm md:text-base ">
-                    <li className="mr-2">
-                        <TabButton
-                            onClick={() => setStatus("upcoming")}
-                            active={status === "upcoming"}
-                        >
-                            Upcoming ({pageProps.countLessons.upcoming})
-                        </TabButton>
-                    </li>
-                    <li className="mr-2">
-                        <TabButton
-                            onClick={() => setStatus("completed")}
-                            active={status === "completed"}
-                        >
-                            Completed ({pageProps.countLessons.completed})
-                        </TabButton>
-                    </li>
-                    <li className="mr-2">
-                        <TabButton
-                            onClick={() => setStatus("canceled")}
-                            active={status === "canceled"}
-                        >
-                            Canceled ({pageProps.countLessons.canceled})
-                        </TabButton>
-                    </li>
+                    {pageProps.countLessons.upcoming > 0 && (
+                        <li className="mr-2">
+                            <TabButton
+                                onClick={() => setStatus("upcoming")}
+                                active={status === "upcoming"}
+                            >
+                                Upcoming ({pageProps.countLessons.upcoming})
+                            </TabButton>
+                        </li>
+                    )}
+                    {pageProps.countLessons.completed > 0 && (
+                        <li className="mr-2">
+                            <TabButton
+                                onClick={() => setStatus("completed")}
+                                active={status === "completed"}
+                            >
+                                Completed ({pageProps.countLessons.completed})
+                            </TabButton>
+                        </li>
+                    )}
+                    {pageProps.countLessons.canceled > 0 && (
+                        <li className="mr-2">
+                            <TabButton
+                                onClick={() => setStatus("canceled")}
+                                active={status === "canceled"}
+                            >
+                                Canceled ({pageProps.countLessons.canceled})
+                            </TabButton>
+                        </li>
+                    )}
                 </ul>
             </div>
         </div>

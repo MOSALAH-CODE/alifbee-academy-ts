@@ -18,6 +18,7 @@ import { Lesson } from "@/types";
 import { formatDate, formatLessonTime, sortLessons } from "@/utils";
 import LessonDetailsModal from "./Modals/LessonDetailsModal";
 import CancelLessonModal from "./Modals/CancelLessonModal";
+import ResponseMessageModal from "./Modals/ResponseMessageModal";
 
 export const getStatusColor = (status: string) => {
     switch (status) {
@@ -317,6 +318,7 @@ export default function LessonsTable({
                 isModalOpen={cancelLessonModalOpen}
                 setIsModalOpen={setCancelLessonModalOpen}
                 selectedLesson={selectedLesson}
+                // setResponseMessageModalOpen={setResponseMessageModalOpen}
             />
         </div>
     );

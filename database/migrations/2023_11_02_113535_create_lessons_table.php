@@ -19,12 +19,12 @@ return new class extends Migration
             $table->unsignedBigInteger('tutor_id');
             $table->foreign('tutor_id')
                 ->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedSmallInteger('credit_cost');
             $table->timestamp('start_date');
             $table->timestamp('end_date');
-            $table->string('status', 50);
+            $table->boolean('status');
             $table->string('meet_id')->nullable();
             $table->string('password')->nullable();
-            $table->unsignedSmallInteger('credit_cost');
             $table->timestamps();
         });
     }

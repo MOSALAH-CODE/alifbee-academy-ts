@@ -37,6 +37,10 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 Route::get('/api/dashboard/lessons', [DashboardController::class, 'show'])
     ->middleware(['auth', 'verified']);
 
+Route::delete('/api/lessons/{id}/cancel', [DashboardController::class, 'cancelLesson'])
+    ->middleware(['auth', 'verified']);
+
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

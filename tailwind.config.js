@@ -48,6 +48,10 @@ export default {
                     light: "#FBE9E9",
                     DEFAULT: "#E5383D",
                 },
+                success: {
+                    light: "#e8fdec",
+                    DEFAULT: "#479F55",
+                },
             },
             fontFamily: {
                 sans: ["Roboto", "Figtree", ...defaultTheme.fontFamily.sans],

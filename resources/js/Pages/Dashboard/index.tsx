@@ -7,6 +7,8 @@ import StatisticsCard from "./Components/Cards/StatisticsCard";
 import NextLessonCard from "./Components/Cards/NextLessonCard";
 import LessonsCard from "./Components/Cards/LessonsCard";
 import CreditBalanceCard from "./Components/Cards/CreditBalanceCard";
+import { Statuses } from "@/types";
+import { hasAnyLessons } from "@/utils";
 
 const Dashboard = () => {
     const { pageProps, status, setStatus, filteredLessons, loading } =
@@ -18,7 +20,9 @@ const Dashboard = () => {
 
             <div
                 className={`grid gap-6 ${
-                    filteredLessons.length > 0 ? "grid-cols-12" : "grid-cols-1"
+                    hasAnyLessons(pageProps.countLessons)
+                        ? "grid-cols-12"
+                        : "grid-cols-1"
                 } `}
             >
                 {/* Left Section */}
@@ -27,7 +31,7 @@ const Dashboard = () => {
                     <CreditBalanceCard balance={pageProps.auth.user.balance} />
 
                     {/* Lessons Section */}
-                    {filteredLessons.length > 0 ? (
+                    {hasAnyLessons(pageProps.countLessons) ? (
                         <LessonsCard
                             header={
                                 <TabNavigation
@@ -51,7 +55,7 @@ const Dashboard = () => {
                     )}
                 </div>
 
-                {filteredLessons.length > 0 && (
+                {hasAnyLessons(pageProps.countLessons) && (
                     <>
                         <div className="col-span-12 md:col-span-6 lg:hidden">
                             <NextLessonCard lesson={pageProps.nextLesson} />

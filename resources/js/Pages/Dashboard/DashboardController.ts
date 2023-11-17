@@ -8,11 +8,22 @@ function UseDashboardController() {
     const pageProps = useSelector(selectPageProps);
 
     const [filteredLessons, setFilteredLessons] = useState<Lesson[]>([]);
-    const [status, setStatus] = useState("upcoming");
+
+    const [status, setStatus] = useState("");
+
+    useEffect(() => {
+        if (pageProps.countLessons.upcoming > 0) {
+            setStatus("upcoming");
+        } else if (pageProps.countLessons.completed > 0) {
+            setStatus("completed");
+        } else if (pageProps.countLessons.canceled > 0) {
+            setStatus("canceled");
+        }
+    }, [pageProps.countLessons]);
+
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // setLoading(true);
         axios
             .get("/api/dashboard/lessons", {
                 params: {
@@ -20,23 +31,9 @@ function UseDashboardController() {
                 },
             })
             .then((response) => {
-                const lessons: Lesson[] = [];
-                response.data.lessons.forEach((lesson: Lesson) => {
-                    lessons.push(
-                        new Lesson(
-                            lesson?.id,
-                            lesson?.user_id,
-                            lesson?.tutor_id,
-                            new Date(lesson?.start_date),
-                            new Date(lesson?.end_date),
-                            lesson?.status,
-                            lesson?.meet_id,
-                            lesson?.password,
-                            lesson?.credit_cost,
-                            User.fromJson(lesson?.tutor) || null
-                        )
-                    );
-                });
+                const lessons: Lesson[] = response.data.lessons.map(
+                    (lesson: any) => Lesson.fromJson(lesson)
+                );
                 setFilteredLessons(lessons);
             })
             .catch((error) => {

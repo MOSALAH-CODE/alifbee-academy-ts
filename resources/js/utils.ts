@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Lesson } from "./types";
+import { Lesson, Statuses } from "./types";
 
 export function formatDate(
     date: Date,
@@ -37,7 +37,6 @@ export function getDayOfDate(date: Date) {
     };
     const dayName = new Intl.DateTimeFormat("en-US", options).format(date);
 
-    console.log(dayName);
     return dayName;
 }
 
@@ -123,4 +122,11 @@ export function useCurrentTime() {
 export function getTimeZone() {
     const { timeZone } = Intl.DateTimeFormat().resolvedOptions();
     return timeZone;
+}
+
+export function hasAnyLessons(countLessons: Statuses) {
+    return (
+        countLessons.upcoming + countLessons.completed + countLessons.canceled >
+        0
+    );
 }
