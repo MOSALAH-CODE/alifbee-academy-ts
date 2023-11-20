@@ -6,12 +6,18 @@ import Card from "@/Components/Card";
 import { Lesson } from "@/types";
 import LessonsTable from "@/Pages/Dashboard/Components/LessonsTable";
 import ControlPointRoundedIcon from "@mui/icons-material/ControlPointRounded";
+import { useSelector } from "react-redux";
+import { selectPageProps } from "@/features/pagePropsSlice";
+import { hasAnyLessons } from "@/utils";
 
 interface LessonsCardProps {
     lessons?: Lesson[];
     status: string;
     header?: ReactNode;
     divider?: boolean;
+    loading?: boolean;
+    showMoreLessons?: boolean;
+    setShowMoreLessons?: (value: boolean) => void;
 }
 
 const LessonsCard = ({
@@ -19,15 +25,23 @@ const LessonsCard = ({
     status,
     header,
     divider = true,
+    loading = false,
+    showMoreLessons,
+    setShowMoreLessons,
 }: LessonsCardProps) => {
+    const pageProps = useSelector(selectPageProps);
+
     return (
         <Card header={header} divider={divider}>
             <div className="grid grid-cols-1 gap-4 justify-items-center">
-                {lessons?.length ? (
+                {hasAnyLessons(pageProps.countLessons) ? (
                     <LessonsTable
-                        lessons={lessons}
+                        lessons={lessons ?? []}
                         status={status}
                         className="mt-3"
+                        loading={loading}
+                        showMoreLessons={showMoreLessons}
+                        setShowMoreLessons={setShowMoreLessons}
                     />
                 ) : (
                     <div className="grid grid-cols-1 gap-4 justify-items-center">

@@ -17,7 +17,7 @@ export default function Authenticated({
     user,
     header,
     children,
-    loading,
+    loading = false,
 }: PropsWithChildren<{ user: User; header?: ReactNode; loading?: boolean }>) {
     return (
         <>

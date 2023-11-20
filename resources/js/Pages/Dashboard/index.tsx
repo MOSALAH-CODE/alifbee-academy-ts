@@ -7,15 +7,21 @@ import StatisticsCard from "./Components/Cards/StatisticsCard";
 import NextLessonCard from "./Components/Cards/NextLessonCard";
 import LessonsCard from "./Components/Cards/LessonsCard";
 import CreditBalanceCard from "./Components/Cards/CreditBalanceCard";
-import { Statuses } from "@/types";
 import { hasAnyLessons } from "@/utils";
 
 const Dashboard = () => {
-    const { pageProps, status, setStatus, filteredLessons, loading } =
-        UseDashboardController();
+    const {
+        pageProps,
+        status,
+        setStatus,
+        filteredLessons,
+        loading,
+        showMoreLessons,
+        setShowMoreLessons,
+    } = UseDashboardController();
 
     return (
-        <AuthenticatedLayout user={pageProps.auth.user} loading={loading}>
+        <AuthenticatedLayout user={pageProps.auth.user}>
             <Head title="Dashboard" />
 
             <div
@@ -42,6 +48,9 @@ const Dashboard = () => {
                             lessons={filteredLessons}
                             status={status}
                             divider={false}
+                            loading={loading}
+                            showMoreLessons={showMoreLessons}
+                            setShowMoreLessons={setShowMoreLessons}
                         />
                     ) : (
                         <LessonsCard

@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Models\Lessons;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
@@ -37,6 +35,8 @@ class DashboardController extends Controller
     public function show(Request $request)
     {
         $statusRequest = $request->input('status');
+        $showAll = $request->input('showAll');
+        dd($showAll);
 
         $lessons = Lessons::where('user_id', Auth::user()->id)
             ->when($statusRequest === 'canceled', function ($query) {

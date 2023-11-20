@@ -10,6 +10,7 @@ function UseDashboardController() {
     const [filteredLessons, setFilteredLessons] = useState<Lesson[]>([]);
 
     const [status, setStatus] = useState("");
+    const [showMoreLessons, setShowMoreLessons] = useState(false);
 
     useEffect(() => {
         if (pageProps.countLessons.upcoming > 0) {
@@ -24,10 +25,12 @@ function UseDashboardController() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        setLoading(true);
         axios
             .get("/api/dashboard/lessons", {
                 params: {
                     status: status,
+                    showAll: showMoreLessons,
                 },
             })
             .then((response) => {
@@ -40,7 +43,7 @@ function UseDashboardController() {
                 console.error("Error fetching lessons:", error);
             })
             .finally(() => setLoading(false));
-    }, [status]);
+    }, [status, showMoreLessons]);
 
     return {
         pageProps,
@@ -48,6 +51,8 @@ function UseDashboardController() {
         setStatus,
         filteredLessons,
         loading,
+        showMoreLessons,
+        setShowMoreLessons,
     };
 }
 

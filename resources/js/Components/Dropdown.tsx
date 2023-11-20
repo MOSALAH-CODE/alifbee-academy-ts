@@ -30,7 +30,7 @@ const Dropdown = ({ children }: PropsWithChildren) => {
 
     return (
         <DropDownContext.Provider value={{ open, setOpen, toggleOpen }}>
-            <div className="relative">{children}</div>
+            <div className="">{children}</div>
         </DropDownContext.Provider>
     );
 };
@@ -93,7 +93,8 @@ const Content = ({
                 leaveTo="opacity-0 scale-95"
             >
                 <div
-                    className={`absolute z-50 mt-1 rounded-md shadow-md ${alignmentClasses} ${widthClasses}`}
+                    // className={`absolute z-50 mt-1 rounded-md shadow-md overflow-auto ${alignmentClasses} ${widthClasses}`}
+                    className={`absolute z-50 mt-1 rounded-md shadow-md overflow-auto ${widthClasses}`}
                     onClick={() => setOpen(false)}
                 >
                     <div
