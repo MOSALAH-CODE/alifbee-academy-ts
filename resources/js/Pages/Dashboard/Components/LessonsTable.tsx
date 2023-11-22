@@ -12,11 +12,18 @@ import HistoryIcon from "@/Components/Icons/HistoryIcon";
 import SortIcon from "@/Components/Icons/SortIcon";
 
 import { Lesson } from "@/types";
-import { formatDate, formatLessonTime, sortLessons } from "@/utils";
+import {
+    formatDate,
+    formatLessonTime,
+    getLessonCountByStatus,
+    sortLessons,
+} from "@/utils";
 import LessonDetailsModal from "./Modals/LessonDetailsModal";
 import CancelLessonModal from "./Modals/CancelLessonModal";
 
 import { Shimmer, Image } from "react-shimmer";
+import { useSelector } from "react-redux";
+import { selectPageProps } from "@/features/pagePropsSlice";
 
 export const getStatusColor = (status: string) => {
     switch (status) {
@@ -68,7 +75,7 @@ export default function LessonsTable({
     setShowMoreLessons,
     ...props
 }: LessonsTableProps) {
-    // const [showMore, setShowMore] = useState(false);
+    const pageProps = useSelector(selectPageProps);
 
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [sortBy, setSortBy] = useState<"date" | "status">("date");
@@ -181,77 +188,98 @@ export default function LessonsTable({
                 <tbody>
                     {loading ? (
                         <>
-                            <tr className="mx-2 bg-white border border-white border-b-gray-200 ">
-                                <th
-                                    scope="row"
-                                    className="pl-2 pr-4 font-medium text-gray-900 whitespace-nowrap"
+                            {Array.from({
+                                length: showMoreLessons
+                                    ? getLessonCountByStatus(
+                                          pageProps.countLessons,
+                                          status
+                                      )
+                                    : getLessonCountByStatus(
+                                          pageProps.countLessons,
+                                          status
+                                      ) > 3
+                                    ? 3
+                                    : getLessonCountByStatus(
+                                          pageProps.countLessons,
+                                          status
+                                      ),
+                            }).map((_, index) => (
+                                <tr
+                                    key={index}
+                                    className="mx-2 bg-white border border-white border-b-gray-200 "
+                                    style={{ height: "60px" }}
                                 >
-                                    <div className="flex items-center gap-2 py-2">
-                                        <Shimmer
-                                            className="rounded-full"
-                                            width={30}
-                                            height={30}
-                                            duration={0.95}
-                                        />
-                                        <Shimmer
-                                            className="rounded"
-                                            width={150}
-                                            height={25}
-                                            duration={0.95}
-                                        />
-                                    </div>
-                                </th>
+                                    <th
+                                        scope="row"
+                                        className="pl-2 pr-4 font-medium text-gray-900 whitespace-nowrap"
+                                    >
+                                        <div className="flex items-center gap-2 py-2">
+                                            <Shimmer
+                                                className="rounded-full"
+                                                width={30}
+                                                height={30}
+                                                duration={0.95}
+                                            />
+                                            <Shimmer
+                                                className="rounded"
+                                                width={150}
+                                                height={25}
+                                                duration={0.95}
+                                            />
+                                        </div>
+                                    </th>
 
-                                <td className="py-2">
-                                    <div className="flex items-center pr-4">
-                                        <div
-                                            className="bg-gray-300 inline-block min-h-[1.25rem] mr-4 h-9"
-                                            style={{ width: "1.5px" }}
-                                        ></div>
-                                        <div className="grid gap-1">
+                                    <td className="py-2">
+                                        <div className="flex items-center pr-4">
+                                            <div
+                                                className="bg-gray-300 inline-block min-h-[1.25rem] mr-4 h-9"
+                                                style={{ width: "1.5px" }}
+                                            ></div>
+                                            <div className="grid gap-1">
+                                                <Shimmer
+                                                    className="rounded"
+                                                    width={100}
+                                                    height={10}
+                                                    duration={0.95}
+                                                />
+                                                <Shimmer
+                                                    className="rounded"
+                                                    width={85}
+                                                    height={8}
+                                                    duration={0.95}
+                                                />
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="py-2">
+                                        <div className="flex items-center pr-4">
+                                            <div
+                                                className="bg-gray-300 inline-block min-h-[1.25rem] mr-4 h-9"
+                                                style={{ width: "1.5px" }}
+                                            ></div>
                                             <Shimmer
                                                 className="rounded"
-                                                width={100}
-                                                height={10}
-                                                duration={0.95}
-                                            />
-                                            <Shimmer
-                                                className="rounded"
-                                                width={85}
-                                                height={8}
+                                                width={90}
+                                                height={25}
                                                 duration={0.95}
                                             />
                                         </div>
-                                    </div>
-                                </td>
-                                <td className="py-2">
-                                    <div className="flex items-center pr-4">
-                                        <div
-                                            className="bg-gray-300 inline-block min-h-[1.25rem] mr-4 h-9"
-                                            style={{ width: "1.5px" }}
-                                        ></div>
-                                        <Shimmer
-                                            className="rounded"
-                                            width={90}
-                                            height={25}
-                                            duration={0.95}
-                                        />
-                                    </div>
-                                </td>
-                                <td className="">
-                                    <div className="flex items-center justify-between">
-                                        <div
-                                            className="bg-gray-300 inline-block min-h-[1.25rem] mr-4 h-9"
-                                            style={{ width: "1.5px" }}
-                                        ></div>
-                                        <div className="">
-                                            <button type="button">
-                                                <MoreVertIcon className="text-gray-300" />
-                                            </button>
+                                    </td>
+                                    <td className="">
+                                        <div className="flex items-center justify-between">
+                                            <div
+                                                className="bg-gray-300 inline-block min-h-[1.25rem] mr-4 h-9"
+                                                style={{ width: "1.5px" }}
+                                            ></div>
+                                            <div className="">
+                                                <button type="button">
+                                                    <MoreVertIcon className="text-gray-300" />
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                            </tr>
+                                    </td>
+                                </tr>
+                            ))}
                         </>
                     ) : (
                         <>
@@ -259,6 +287,7 @@ export default function LessonsTable({
                                 <tr
                                     key={lesson.id}
                                     className="mx-2 bg-white border border-white border-b-gray-200 "
+                                    style={{ height: "60px" }}
                                 >
                                     <th
                                         scope="row"
@@ -399,7 +428,7 @@ export default function LessonsTable({
                     )}
                 </tbody>
             </table>
-            {lessons.length > 3 && (
+            {getLessonCountByStatus(pageProps.countLessons, status) > 3 && (
                 <div className="mt-4 text-xs font-semibold text-center transition duration-15095ease-in-out text-secondary-400 hover:text-secondary-dark">
                     {showMoreLessons ? (
                         <button onClick={() => setShowMoreLessons(false)}>

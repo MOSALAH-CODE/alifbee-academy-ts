@@ -130,3 +130,16 @@ export function hasAnyLessons(countLessons: Statuses) {
         0
     );
 }
+
+export function getLessonCountByStatus(countLessons: Statuses, status: string) {
+    switch (status) {
+        case "upcoming":
+            return countLessons.upcoming;
+        case "completed":
+            return countLessons.completed;
+        case "canceled":
+            return countLessons.canceled;
+        default:
+            return 0;
+    }
+}

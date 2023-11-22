@@ -25,24 +25,26 @@ function UseDashboardController() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        setLoading(true);
-        axios
-            .get("/api/dashboard/lessons", {
-                params: {
-                    status: status,
-                    showAll: showMoreLessons,
-                },
-            })
-            .then((response) => {
-                const lessons: Lesson[] = response.data.lessons.map(
-                    (lesson: any) => Lesson.fromJson(lesson)
-                );
-                setFilteredLessons(lessons);
-            })
-            .catch((error) => {
-                console.error("Error fetching lessons:", error);
-            })
-            .finally(() => setLoading(false));
+        if (status) {
+            setLoading(true);
+            axios
+                .get("/api/dashboard/lessons", {
+                    params: {
+                        status: status,
+                        showAll: showMoreLessons,
+                    },
+                })
+                .then((response) => {
+                    const lessons: Lesson[] = response.data.lessons.map(
+                        (lesson: any) => Lesson.fromJson(lesson)
+                    );
+                    setFilteredLessons(lessons);
+                })
+                .catch((error) => {
+                    console.error("Error fetching lessons:", error);
+                })
+                .finally(() => setLoading(false));
+        }
     }, [status, showMoreLessons]);
 
     return {

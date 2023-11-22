@@ -34,7 +34,7 @@ const LessonsCard = ({
     return (
         <Card header={header} divider={divider}>
             <div className="grid grid-cols-1 gap-4 justify-items-center">
-                {hasAnyLessons(pageProps.countLessons) ? (
+                {hasAnyLessons(pageProps.countLessons) && setShowMoreLessons ? (
                     <LessonsTable
                         lessons={lessons ?? []}
                         status={status}

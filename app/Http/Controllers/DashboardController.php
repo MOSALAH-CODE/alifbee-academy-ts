@@ -35,29 +35,32 @@ class DashboardController extends Controller
     public function show(Request $request)
     {
         $statusRequest = $request->input('status');
-        $showAll = $request->input('showAll');
-        dd($showAll);
+        $showAll = filter_var($request->input('showAll'), FILTER_VALIDATE_BOOLEAN);
 
-        $lessons = Lessons::where('user_id', Auth::user()->id)
+        $lessonsQuery = Lessons::where('user_id', Auth::user()->id)
             ->when($statusRequest === 'canceled', function ($query) {
-                // Filter canceled lessons directly
                 return $query->where('status', false);
             })
-            ->when($statusRequest !== 'canceled', function ($query) use ($statusRequest) {
-                // Filter upcoming or completed lessons based on date conditions
-                return $query->where('status', true)
+            ->when($statusRequest !== 'canceled', function ($query) use ($statusRequest, $showAll) {
+                $query = $query->where('status', true)
                     ->when($statusRequest === 'upcoming', function ($q) {
                         return $q->where('start_date', '>', now());
                     })
                     ->when($statusRequest === 'completed', function ($q) {
                         return $q->where('start_date', '<', now());
                     });
+
+                if (!$showAll) {
+                    $query->limit(3);
+                }
+
+                return $query;
             })
             ->with('tutor')
             ->orderBy('start_date', 'asc')
             ->get();
 
-        return response()->json(['lessons' => $lessons], 200);
+        return response()->json(['lessons' => $lessonsQuery], 200);
     }
 
     public function cancelLesson(Request $request, $id)
