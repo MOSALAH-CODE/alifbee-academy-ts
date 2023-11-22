@@ -103,7 +103,7 @@ export default function LessonsTable({
 
     return (
         <div className={"overflow-x-auto w-full " + className}>
-            <table className="w-full text-sm text-left text-gray-500 ">
+            <table className="w-full text-sm text-left text-gray-500">
                 <thead className="text-xs text-secondary-dark bg-body ">
                     <tr>
                         <th

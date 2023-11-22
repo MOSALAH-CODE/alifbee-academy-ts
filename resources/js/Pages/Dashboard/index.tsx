@@ -21,7 +21,22 @@ const Dashboard = () => {
     } = UseDashboardController();
 
     return (
-        <AuthenticatedLayout user={pageProps.auth.user}>
+        <AuthenticatedLayout
+            user={pageProps.auth.user}
+            // header={
+            //     <div>
+            //         <TabNavigation
+            //             status={status}
+            //             setStatus={setStatus}
+            //             bookLessonButton={false}
+            //             justifyBetween={false}
+            //             className="w-fit"
+            //             border={false}
+            //             title="Lessons:"
+            //         />
+            //     </div>
+            // }
+        >
             <Head title="Dashboard" />
 
             <div
@@ -79,7 +94,15 @@ const Dashboard = () => {
                         </div>
 
                         {/* Right Section */}
-                        <div className="hidden lg:space-y-6 lg:block lg:col-span-4">
+                        <div
+                            className="hidden w-full h-fit lg:space-y-6 lg:block lg:col-span-4"
+                            style={{
+                                position: "sticky",
+                                top: 0,
+                                width: "100%",
+                                zIndex: 0,
+                            }}
+                        >
                             <NextLessonCard lesson={pageProps.nextLesson} />
                             <StatisticsCard
                                 completedLessons={
@@ -91,6 +114,8 @@ const Dashboard = () => {
                     </>
                 )}
             </div>
+
+            {/* <div className="h-96"></div> */}
         </AuthenticatedLayout>
     );
 };

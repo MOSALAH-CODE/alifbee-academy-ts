@@ -18,7 +18,7 @@ export default function TabButton({
         <button
             {...props}
             onClick={onClick}
-            className={`inline-block py-4 border-b-2  rounded-t-lg transition ease-in-out duration-150  ${
+            className={`inline-block py-3 border-b-2  rounded-t-lg transition ease-in-out duration-150  ${
                 active
                     ? "active border-secondary-dark text-secondary-dark"
                     : " border-transparent hover:text-secondary-400 hover:border-secondary-400"

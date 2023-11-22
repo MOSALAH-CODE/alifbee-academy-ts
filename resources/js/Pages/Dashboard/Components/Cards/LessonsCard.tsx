@@ -32,8 +32,19 @@ const LessonsCard = ({
     const pageProps = useSelector(selectPageProps);
 
     return (
-        <Card header={header} divider={divider}>
-            <div className="grid grid-cols-1 gap-4 justify-items-center">
+        <Card divider={divider}>
+            <div
+                style={{
+                    position: "sticky",
+                    top: 0,
+                    width: "100%",
+                    zIndex: 1,
+                }}
+                className="bg-white"
+            >
+                {header}
+            </div>
+            <div className="z-50 grid grid-cols-1 gap-4 justify-items-center">
                 {hasAnyLessons(pageProps.countLessons) && setShowMoreLessons ? (
                     <LessonsTable
                         lessons={lessons ?? []}

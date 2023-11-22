@@ -5,10 +5,14 @@ const Card = ({
     header,
     footer,
     divider = true,
+    isSticky = false,
+    isStickyHeader = false,
 }: PropsWithChildren<{
     header?: ReactNode;
     footer?: ReactNode;
     divider?: boolean;
+    isSticky?: boolean;
+    isStickyHeader?: boolean;
 }>) => {
     const [isMounted, setIsMounted] = useState(false);
 
@@ -24,12 +28,33 @@ const Card = ({
 
     return (
         <div
+            style={
+                isSticky
+                    ? {
+                          position: "sticky",
+                          top: 0,
+                          width: "100%",
+                          zIndex: 1000,
+                      }
+                    : undefined
+            }
             className={`p-4 bg-white rounded-lg shadow-sm ${
                 isMounted ? "card-mounted" : "card-unmounted"
             }`}
         >
             {header ? (
-                <header>
+                <header
+                    style={
+                        isStickyHeader
+                            ? {
+                                  position: "sticky",
+                                  top: 0,
+                                  width: "100%",
+                                  zIndex: 1000,
+                              }
+                            : undefined
+                    }
+                >
                     <div
                         className={`grid grid-cols-1 ${
                             divider ? "divide-y" : ""

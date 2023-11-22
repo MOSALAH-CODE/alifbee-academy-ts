@@ -18,6 +18,7 @@ const StatisticsCard = ({
                     Your statistics
                 </h2>
             }
+            // isSticky={true}
         >
             <div className="grid grid-cols-2 mt-3 divide-x">
                 <div className="grid gap-4">

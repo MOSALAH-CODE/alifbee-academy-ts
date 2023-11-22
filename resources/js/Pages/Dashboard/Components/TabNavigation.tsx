@@ -9,12 +9,20 @@ import { useEffect } from "react";
 interface TabNavigationProps {
     status: string;
     setStatus: (status: string) => void;
+    bookLessonButton?: boolean;
+    justifyBetween?: boolean;
+    title?: string;
+    border?: boolean;
     className?: string;
 }
 
 export default function TabNavigation({
     status,
     setStatus,
+    bookLessonButton = true,
+    justifyBetween = true,
+    title = "My lessons:",
+    border = true,
     className = "",
 }: TabNavigationProps) {
     const pageProps = useSelector(selectPageProps);
@@ -22,18 +30,25 @@ export default function TabNavigation({
     return (
         <div
             className={
-                "text-secondary-400 font-semibold border-b border-gray-200 " +
-                className
+                `text-secondary-400 font-semibold ${
+                    border && "border-b border-gray-200"
+                } ` + className
             }
         >
-            <div className="flex flex-col justify-between md:flex-row">
+            <div
+                className={`flex flex-col ${
+                    justifyBetween ? "justify-between" : "gap-4"
+                } md:flex-row`}
+            >
                 <div className="flex items-center justify-between gap-4 md:justify-normal">
                     <h3 className="text-xl font-semibold text-secondary-dark">
-                        My lessons:
+                        {title}
                     </h3>
-                    <OutlineButton className="text-sm">
-                        Book a lesson
-                    </OutlineButton>
+                    {bookLessonButton && (
+                        <OutlineButton className="text-sm">
+                            Book a lesson
+                        </OutlineButton>
+                    )}
                 </div>
                 <ul className="flex flex-wrap gap-2 -mb-px text-sm md:text-base ">
                     {pageProps.countLessons.upcoming > 0 && (

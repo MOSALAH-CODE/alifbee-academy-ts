@@ -40,6 +40,7 @@ const NextLessonCard = ({ lesson }: NextLessonCardProps) => {
                     </p>
                 </div>
             }
+            // isSticky={true}
         >
             {lesson ? (
                 <>
