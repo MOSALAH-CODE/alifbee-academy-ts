@@ -19,24 +19,23 @@ class DatabaseSeeder extends Seeder
             RoleAndPermissionSeeder::class,
         ]);
 
-        User::factory()->create([
+        $admin = User::factory()->create([
             'name' => 'Admin',
             'email' => 'admin@example.com',
             'password' => Hash::make('adminpass'),
             'balance' => 100,
-            'role_id' => 1,
         ]);
+        $admin->assignRole("Admin");
 
-        User::factory(5)->create([
-            'role_id' => 2
-        ]);
-        User::factory(10)->create();
 
+        User::factory(5)->create()->each(function ($user) {
+            $user->assignRole("Tutor");
+        });
+
+        User::factory(10)->create()->each(function ($user) {
+            $user->assignRole("Learner");
+        });
+        
         Lessons::factory(50)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
     }
 }

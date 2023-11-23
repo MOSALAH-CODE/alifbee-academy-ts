@@ -13,10 +13,14 @@ export default function Authenticated({
     header,
     children,
     loading = false,
+    nav = true,
+    footer = true,
 }: PropsWithChildren<{
     user: User;
     header?: ReactNode;
     loading?: boolean;
+    nav?: boolean;
+    footer?: boolean;
 }>) {
     const [scaleValue, setScaleValue] = useState(1);
 
@@ -45,40 +49,46 @@ export default function Authenticated({
             ) : (
                 <>
                     <div className="flex flex-col min-h-screen bg-body">
-                        <NavBar user={user} />
+                        {nav && (
+                            <>
+                                <NavBar user={user} />
 
-                        {/* <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-around py-2 bg-secondary-dark md:hidden"> */}
-                        <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-around py-2 md:hidden bg-secondary-dark ">
-                            <NavLink
-                                href={route("dashboard")}
-                                active={route().current("dashboard")}
-                            >
-                                <DashboardIcon />
-                            </NavLink>
-                            <NavLink
-                                href={route("tutors")}
-                                active={route().current("tutors")}
-                            >
-                                <TutorIcon />
-                            </NavLink>
-                            <NavLink
-                                href={route("calendar")}
-                                stroke={true}
-                                active={route().current("calendar")}
-                            >
-                                <CalendarIcon />
-                            </NavLink>
-                            <NavLink
-                                href={route("profile.edit")}
-                                active={route().current("dashboard")}
-                            >
-                                <Avatar
-                                    sx={{ width: 24, height: 24 }}
-                                    className={"border-primary-400 border-2"}
-                                    src={user?.profile_picture}
-                                />
-                            </NavLink>
-                        </div>
+                                {/* <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-around py-2 bg-secondary-dark md:hidden"> */}
+                                <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-around py-2 md:hidden bg-secondary-dark ">
+                                    <NavLink
+                                        href={route("dashboard")}
+                                        active={route().current("dashboard")}
+                                    >
+                                        <DashboardIcon />
+                                    </NavLink>
+                                    <NavLink
+                                        href={route("tutors")}
+                                        active={route().current("tutors")}
+                                    >
+                                        <TutorIcon />
+                                    </NavLink>
+                                    <NavLink
+                                        href={route("calendar")}
+                                        stroke={true}
+                                        active={route().current("calendar")}
+                                    >
+                                        <CalendarIcon />
+                                    </NavLink>
+                                    <NavLink
+                                        href={route("profile.edit")}
+                                        active={route().current("dashboard")}
+                                    >
+                                        <Avatar
+                                            sx={{ width: 24, height: 24 }}
+                                            className={
+                                                "border-primary-400 border-2"
+                                            }
+                                            src={user?.profile_picture}
+                                        />
+                                    </NavLink>
+                                </div>
+                            </>
+                        )}
 
                         {header && (
                             <header
@@ -108,7 +118,7 @@ export default function Authenticated({
                         </main>
 
                         {/* Footer */}
-                        <PageFooter />
+                        {footer && <PageFooter />}
                     </div>
                 </>
             )}

@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Spatie\Permission\Models\Role;
 
 return new class extends Migration
 {
@@ -20,9 +19,6 @@ return new class extends Migration
             $table->string('password');
             $table->string('profile_picture')->nullable();
             $table->unsignedSmallInteger('balance')->default(0);
-            $table->unsignedBigInteger('role_id')->default(0);
-            $table->foreign('role_id')
-                ->references('id')->on('roles')->onDelete('cascade');
             $table->string('account_verification_token')->nullable();
             $table->timestamp('account_verification_expiration')->nullable();
             $table->string('password_reset_token')->nullable();

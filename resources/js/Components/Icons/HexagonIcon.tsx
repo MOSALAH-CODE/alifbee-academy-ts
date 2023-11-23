@@ -14,6 +14,7 @@ const HexagonIcon = ({
     return (
         <div>
             <svg
+                className={`fill-${fill}`}
                 width={width}
                 height={height}
                 viewBox="0 0 32 34"

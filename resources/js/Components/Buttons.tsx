@@ -14,7 +14,7 @@ export const PrimaryButton: React.FC<ButtonProps> = ({
         <button
             {...props}
             disabled={disabled}
-            className={`inline-flex items-center px-4 py-2 bg-primary border border-transparent rounded-md font-semibold text-xs text-secondary-dark tracking-widest hover:bg-primary-400 focus:bg-tertiary active:bg-primary-400 focus:outline-none transition ease-in-out duration-150 ${
+            className={`items-center px-4 py-2 bg-primary border border-transparent rounded-md font-semibold text-xs text-secondary-dark tracking-widest hover:bg-primary-400 focus:bg-tertiary active:bg-primary-400 focus:outline-none transition ease-in-out duration-150 ${
                 disabled && "opacity-25"
             } ${className}`}
         >
@@ -33,7 +33,7 @@ export const OutlineButton: React.FC<ButtonProps> = ({
         <button
             {...props}
             disabled={disabled}
-            className={`inline-flex items-center px-4 py-2 border-2 border-primary-700 rounded-md font-semibold text-xs text-secondary-dark tracking-wider hover:bg-primary hover:border-primary focus:outline-none active:bg-primary focus:border-tertiary transition ease-in-out duration-150 ${
+            className={` items-center px-4 py-2 border-2 border-primary-700 rounded-md font-semibold text-xs text-secondary-dark tracking-wider hover:bg-primary hover:border-primary focus:outline-none active:bg-primary focus:border-tertiary transition ease-in-out duration-150 ${
                 disabled && "opacity-25"
             } ${className}`}
         >

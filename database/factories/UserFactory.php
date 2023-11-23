@@ -27,7 +27,6 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('password'),
             'profile_picture' => fake()->imageUrl(),
             'balance' => fake()->numberBetween(0, 20),
-            'role_id' => 3,
         ];
     }
 

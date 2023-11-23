@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BookLessonController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
@@ -30,23 +31,24 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
 
-Route::get('/api/dashboard/lessons', [DashboardController::class, 'show'])
-    ->middleware(['auth', 'verified']);
-
-
-Route::delete('/api/lessons/{id}/cancel', [DashboardController::class, 'cancelLesson'])
-    ->middleware(['auth', 'verified']);
 
 Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['verified'])
+    ->name('dashboard');
+    Route::get('/api/dashboard/lessons', [DashboardController::class, 'show'])
+        ->middleware(['verified']);
+    Route::delete('/api/lessons/{id}/cancel', [DashboardController::class, 'cancelLesson'])
+        ->middleware(['verified']);
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/tutors', [TutorsController::class, 'show'])->name('tutors');
+    Route::get('/tutors', [TutorsController::class, 'index'])->name('tutors');
+    Route::get('/tutors/{id}', [TutorsController::class, 'show'])->name('tutors.show');
+    Route::get('/tutors/book-lesson/{id}', [BookLessonController::class, 'create'])->name('bookLesson.create');
     Route::get('/my-calendar', [CalendarController::class, 'show'])->name('calendar');
 });
 
