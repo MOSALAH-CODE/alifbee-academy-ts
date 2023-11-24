@@ -20,7 +20,6 @@ class LessonsFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => fake()->numberBetween(7, 16),
             'tutor_id' => fake()->numberBetween(2, 6),
             'credit_cost' => 1,
             'start_date' => "2023-11-20 19:00:00",

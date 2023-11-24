@@ -4,28 +4,95 @@ import { selectPageProps } from "@/features/pagePropsSlice";
 import withPageProps from "@/Pages/withPageProps";
 import HexagonIcon from "@/Components/Icons/HexagonIcon";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import DurationOption from "./Components/DurationOption";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import { OutlineButton } from "@/Components/Buttons";
 import { getTimeZone, useCurrentTime } from "@/utils";
 import Slot, { SlotType } from "./Components/Calendar/Slot";
-import CalendarDays from "./Components/Calendar/CalendarDays";
+import CalendarDays, {
+    Day,
+    DayAbbreviation,
+} from "./Components/Calendar/CalendarDays";
+import { addDays, format, startOfWeek, endOfWeek } from "date-fns";
+
+const LessonTime = ({
+    time,
+    textEnd = false,
+}: {
+    time: string;
+    textEnd?: boolean;
+}) => {
+    return (
+        <p
+            className={`text-sm h-14 text-secondary-400 ${
+                textEnd ? "text-end  pr-4" : "pl-2"
+            }`}
+        >
+            {time}
+        </p>
+    );
+};
 
 const BookLesson = () => {
+    const [dateRangeStart, setDateRangeStart] = useState(new Date());
+
+    const handleShiftLeft = () => {
+        const previousWeekStart = addDays(dateRangeStart, -7);
+        const currentWeekStart = startOfWeek(new Date());
+
+        // Prevent shifting beyond the current week
+        if (previousWeekStart >= currentWeekStart) {
+            setDateRangeStart(previousWeekStart);
+        }
+    };
+
+    const handleShiftRight = () => {
+        const nextWeekStart = addDays(dateRangeStart, 7);
+        const oneMonthFromNow = addDays(new Date(), 30);
+
+        // Allow shifting to the next week if it's within one month
+        if (nextWeekStart <= oneMonthFromNow) {
+            setDateRangeStart(nextWeekStart);
+        }
+    };
+
+    const daysOfWeek: Day[] = [];
+    const start = startOfWeek(dateRangeStart);
+
+    for (let i = 0; i < 7; i++) {
+        const day = addDays(start, i);
+        const dayInfo: Day = {
+            abbreviation: format(day, "EEE").toUpperCase() as DayAbbreviation,
+            number: parseInt(format(day, "d"), 10),
+        };
+        daysOfWeek.push(dayInfo);
+    }
+
     const currentTime = useCurrentTime();
 
     const pageProps = useSelector(selectPageProps);
 
     const [selectedDuration, setSelectedDuration] = useState(1);
 
-    useEffect(() => {
-        console.log(selectedDuration);
-    }, [selectedDuration]);
     const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedDuration(Number(event.target.value));
     };
+    // State to manage selected slots
+    const [selectedSlots, setSelectedSlots] = useState<number[]>([]);
+
+    // Handler to select slots
+    const handleSlotSelect = (slotIndex: number) => {
+        if (!selectedSlots.includes(slotIndex)) {
+            setSelectedSlots([...selectedSlots, slotIndex]);
+        } else {
+            setSelectedSlots(
+                selectedSlots.filter((index) => index !== slotIndex)
+            );
+        }
+    };
+
     return (
         <div className="bg-white">
             <div className="flex-1 max-w-6xl p-12 px-4 mx-auto md:px-6 lg:px-8">
@@ -96,14 +163,24 @@ const BookLesson = () => {
                 {/* Calendar */}
                 <div className="grid gap-4">
                     <div className="flex justify-between">
-                        <div className="flex gap-8 items-center">
-                            <h2 className="text-xl font-bold text-secondary-dark">
-                                Dec 21–27, 2021
+                        <div className="flex items-center">
+                            <h2 className="w-60 text-xl font-bold text-secondary-dark">
+                                {format(startOfWeek(dateRangeStart), "MMM d")} –{" "}
+                                {format(
+                                    endOfWeek(dateRangeStart),
+                                    "MMM d, yyyy"
+                                )}
                             </h2>
 
-                            <div>
-                                <ChevronLeftRoundedIcon className="text-secondary-900" />
-                                <ChevronRightRoundedIcon className="text-secondary-900" />
+                            <div className="mr-8">
+                                <ChevronLeftRoundedIcon
+                                    className="text-secondary-900 cursor-pointer hover:text-primary-500"
+                                    onClick={handleShiftLeft}
+                                />
+                                <ChevronRightRoundedIcon
+                                    className="text-secondary-900 cursor-pointer hover:text-primary-500"
+                                    onClick={handleShiftRight}
+                                />
                             </div>
                             <OutlineButton>Today</OutlineButton>
                         </div>
@@ -150,91 +227,105 @@ const BookLesson = () => {
                         </div>
                     </div>
                     <div className="grid gap-0.5">
-                        <CalendarDays
-                            days={[
-                                { abbreviation: "MON", number: 21 },
-                                { abbreviation: "TUE", number: 22 },
-                                { abbreviation: "WED", number: 23 },
-                                { abbreviation: "THU", number: 24 },
-                                { abbreviation: "FRI", number: 25 },
-                                { abbreviation: "SAT", number: 26 },
-                                { abbreviation: "SUN", number: 27 },
-                            ]}
-                        />
+                        <CalendarDays days={daysOfWeek} />
                         <div className="grid grid-cols-9 gap-0.5 ">
-                            <div className="col-span-1 h-14">
-                                <p className="text-sm text-secondary-400 text-end pr-4">
-                                    08:00
-                                </p>
+                            <div className="col-span-1">
+                                <div className="grid gap-0.5">
+                                    <LessonTime textEnd={true} time={"08:00"} />
+                                    <LessonTime textEnd={true} time={"08:30"} />
+                                    <LessonTime textEnd={true} time={"09:00"} />
+                                    <LessonTime textEnd={true} time={"09:30"} />
+                                    <LessonTime textEnd={true} time={"10:00"} />
+                                    <LessonTime textEnd={true} time={"10:30"} />
+                                </div>
                             </div>
-                            <Slot />
-                            <Slot type={SlotType.Booked} />
-                            <Slot type={SlotType.BookedByYou} />
-                            <Slot type={SlotType.Available} />
-                            <Slot type={SlotType.Booked} />
-                            <Slot type={SlotType.BookedByYou} />
-                            <Slot type={SlotType.Available} />
-                            <div className="col-span-1 h-14">
-                                <p className="text-sm text-secondary-400 pl-2">
-                                    08:00
-                                </p>
+                            <div className="col-span-1 grid gap-0.5">
+                                <Slot />
+                                <Slot />
+                                <Slot
+                                    type={SlotType.Available}
+                                    onSelect={() => handleSlotSelect(0)}
+                                    selected={selectedSlots.includes(0)}
+                                />
+                                <Slot
+                                    type={SlotType.Available}
+                                    onSelect={() => handleSlotSelect(1)}
+                                    selected={selectedSlots.includes(1)}
+                                />
+                                <Slot />
+                                <Slot />
                             </div>
-                        </div>
-                        <div className="grid grid-cols-9 gap-0.5">
-                            <div className="col-span-1 h-14">
-                                <p className="text-sm text-secondary-400 text-end pr-4">
-                                    08:30
-                                </p>
+                            <div className="col-span-1 grid gap-0.5">
+                                <Slot
+                                    type={SlotType.Available}
+                                    onSelect={() => handleSlotSelect(0)}
+                                    selected={selectedSlots.includes(0)}
+                                />
+                                <Slot
+                                    type={SlotType.Available}
+                                    onSelect={() => handleSlotSelect(1)}
+                                    selected={selectedSlots.includes(1)}
+                                />
+                                <Slot />
+                                <Slot />
+                                <Slot />
+                                <Slot />
                             </div>
-                            <Slot />
-                            <Slot type={SlotType.Booked} />
-                            <Slot type={SlotType.BookedByYou} />
-                            <Slot type={SlotType.Available} />
-                            <Slot type={SlotType.Booked} />
-                            <Slot type={SlotType.BookedByYou} />
-                            <Slot type={SlotType.Available} />
-                            <div className="col-span-1 h-14">
-                                <p className="text-sm text-secondary-400 pl-2">
-                                    08:30
-                                </p>
+                            <div className="col-span-1 grid gap-0.5">
+                                <Slot />
+                                <Slot />
+                                <Slot />
+                                <Slot />
+                                <Slot
+                                    type={SlotType.Available}
+                                    onSelect={() => handleSlotSelect(0)}
+                                    selected={selectedSlots.includes(0)}
+                                />
+                                <Slot />
                             </div>
-                        </div>
-                        <div className="grid grid-cols-9 gap-0.5">
-                            <div className="col-span-1 h-14">
-                                <p className="text-sm text-secondary-400 text-end pr-4">
-                                    09:00
-                                </p>
+                            <div className="col-span-1 grid gap-0.5">
+                                <Slot
+                                    type={SlotType.Available}
+                                    onSelect={() => handleSlotSelect(0)}
+                                    selected={selectedSlots.includes(0)}
+                                />
+                                <Slot />
+                                <Slot />
+                                <Slot />
+                                <Slot />
+                                <Slot />
                             </div>
-                            <Slot />
-                            <Slot type={SlotType.Booked} />
-                            <Slot type={SlotType.BookedByYou} />
-                            <Slot type={SlotType.Available} />
-                            <Slot type={SlotType.Booked} />
-                            <Slot type={SlotType.BookedByYou} />
-                            <Slot type={SlotType.Available} />
-                            <div className="col-span-1 h-14">
-                                <p className="text-sm text-secondary-400 pl-2">
-                                    09:00
-                                </p>
+                            <div className="col-span-1 grid gap-0.5">
+                                <Slot />
+                                <Slot />
+                                <Slot />
+                                <Slot />
+                                <Slot />
+                                <Slot />
                             </div>
-                        </div>
-                        <div className="grid grid-cols-9 gap-0.5">
-                            <div className="col-span-1 h-14">
-                                <p className="text-sm text-secondary-400 text-end pr-4">
-                                    09:30
-                                </p>
+                            <div className="col-span-1 grid gap-0.5">
+                                <Slot />
+                                <Slot />
+                                <Slot />
+                                <Slot />
+                                <Slot />
+                                <Slot />
                             </div>
-                            <Slot />
-                            <Slot type={SlotType.Booked} />
-                            <Slot type={SlotType.BookedByYou} />
-                            <Slot type={SlotType.Available} />
-                            <Slot type={SlotType.Booked} />
-                            <Slot type={SlotType.BookedByYou} />
-                            <Slot type={SlotType.Available} />
-                            <div className="col-span-1 h-14">
-                                <p className="text-sm text-secondary-400 pl-2">
-                                    09:30
-                                </p>
+                            <div className="col-span-1 grid gap-0.5">
+                                <Slot />
+                                <Slot />
+                                <Slot />
+                                <Slot />
+                                <Slot />
+                                <Slot />
+                            </div>
+                            <div className="col-span-1 grid gap-0.5">
+                                <LessonTime time={"08:00"} />
+                                <LessonTime time={"08:30"} />
+                                <LessonTime time={"09:00"} />
+                                <LessonTime time={"09:30"} />
+                                <LessonTime time={"10:00"} />
+                                <LessonTime time={"10:30"} />
                             </div>
                         </div>
                     </div>

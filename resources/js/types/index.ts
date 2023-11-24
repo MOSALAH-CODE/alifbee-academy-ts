@@ -53,6 +53,41 @@ export class Tutor {
     }
 }
 
+export class TutorLesson {
+    id: number;
+    user_id: number;
+    credit_cost: number;
+    start_date: Date;
+    end_date: Date;
+    status: string;
+
+    constructor(
+        id: number,
+        user_id: number,
+        credit_cost: number,
+        start_date: Date,
+        end_date: Date,
+        status: string
+    ) {
+        this.id = id;
+        this.user_id = user_id;
+        this.credit_cost = credit_cost;
+        this.start_date = start_date;
+        this.end_date = end_date;
+        this.status = status;
+    }
+    static fromJson(json: any): TutorLesson {
+        return new TutorLesson(
+            json?.id,
+            json?.user_id,
+            json?.credit_cost,
+            new Date(json?.start_date),
+            new Date(json?.end_date),
+            json?.status
+        );
+    }
+}
+
 export class Lesson {
     id: number;
     user_id: number;
@@ -135,6 +170,7 @@ export type PageProps = {
     nextLesson: Lesson | null;
     tutors: Tutor[];
     tutor: Tutor;
+    tutorLessons: TutorLesson[];
 };
 
 // Create a factory function to convert JSON data to PageProps
@@ -158,5 +194,8 @@ export const createPageProps = (json: any): PageProps => {
             Tutor.fromJson(tutorJson)
         ),
         tutor: Tutor.fromJson(json.tutor),
+        tutorLessons: (json.tutorLessons || []).map((tutorLessonJson: any) =>
+            TutorLesson.fromJson(tutorLessonJson)
+        ),
     };
 };

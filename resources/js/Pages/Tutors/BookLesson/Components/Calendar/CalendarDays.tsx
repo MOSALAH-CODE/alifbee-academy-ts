@@ -1,6 +1,13 @@
-type DayAbbreviation = "MON" | "TUE" | "WED" | "THU" | "FRI" | "SAT" | "SUN";
+export type DayAbbreviation =
+    | "MON"
+    | "TUE"
+    | "WED"
+    | "THU"
+    | "FRI"
+    | "SAT"
+    | "SUN";
 
-type Day = {
+export type Day = {
     abbreviation: DayAbbreviation;
     number: number;
 };
