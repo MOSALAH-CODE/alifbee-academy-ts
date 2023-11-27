@@ -13,19 +13,20 @@ class BookLessonController extends Controller
         // Get the authenticated user's ID
         $authUserId = Auth::id();
 
-        // Determine the status of each lesson
         foreach ($lessons as $lesson) {
-            if ($lesson->user_id === null) {
-                if ($lesson->status === 1 && now() <= $lesson->start_date) {
-                    $lesson->status = 'available';
-                } elseif ($lesson->status === 0 || now() > $lesson->start_date) {
-                    $lesson->status = 'not-available';
+            if ($lesson->status === 1){
+                if ($lesson->user_id === $authUserId) {
+                    $lesson->status = 'Booked by you';
+                } elseif ($lesson->user_id !== $authUserId) {
+                    $lesson->status = 'Booked';
                 }
-            } elseif ($lesson->user_id === $authUserId) {
-                $lesson->status = 'booked-by-you';
-            } else {
-                $lesson->status = 'booked';
-            }
+            } elseif ($lesson->status === 0){
+                if (now() < $lesson->start_date){
+                    $lesson->status = 'Available';
+                } elseif (now() > $lesson->start_date){
+                    $lesson->status = 'Not available';
+                }
+            }            
         }
 
         return Inertia::render('Tutors/BookLesson/Index', [

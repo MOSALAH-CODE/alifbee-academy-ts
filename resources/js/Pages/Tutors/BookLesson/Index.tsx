@@ -1,10 +1,9 @@
-import Authenticated from "@/Layouts/AuthenticatedLayout";
 import { useSelector } from "react-redux";
 import { selectPageProps } from "@/features/pagePropsSlice";
 import withPageProps from "@/Pages/withPageProps";
 import HexagonIcon from "@/Components/Icons/HexagonIcon";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import DurationOption from "./Components/DurationOption";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
@@ -16,6 +15,19 @@ import CalendarDays, {
     DayAbbreviation,
 } from "./Components/Calendar/CalendarDays";
 import { addDays, format, startOfWeek, endOfWeek } from "date-fns";
+import { TutorLesson } from "@/types";
+
+type TimeKey = {
+    id: number;
+    hour: number;
+    minutes: number;
+};
+
+type LessonsMap = {
+    [date: string]: {
+        [timeKeyId: number]: TutorLesson;
+    };
+};
 
 const LessonTime = ({
     time,
@@ -63,9 +75,11 @@ const BookLesson = () => {
 
     for (let i = 0; i < 7; i++) {
         const day = addDays(start, i);
+
         const dayInfo: Day = {
             abbreviation: format(day, "EEE").toUpperCase() as DayAbbreviation,
             number: parseInt(format(day, "d"), 10),
+            formattedDate: format(day, "yyyy-MM-dd"),
         };
         daysOfWeek.push(dayInfo);
     }
@@ -80,18 +94,158 @@ const BookLesson = () => {
         setSelectedDuration(Number(event.target.value));
     };
     // State to manage selected slots
-    const [selectedSlots, setSelectedSlots] = useState<number[]>([]);
+    const [selectedSlots, setSelectedSlots] = useState<
+        { date: string; timeKeyId: number }[]
+    >([]);
 
-    // Handler to select slots
-    const handleSlotSelect = (slotIndex: number) => {
-        if (!selectedSlots.includes(slotIndex)) {
-            setSelectedSlots([...selectedSlots, slotIndex]);
-        } else {
-            setSelectedSlots(
-                selectedSlots.filter((index) => index !== slotIndex)
-            );
+    const handleSlotSelect = (_date: string, _timeKeyId: number) => {
+        // Check if the selected slot is available
+        const isAvailable =
+            mappedLessons[_date]?.[_timeKeyId]?.status === SlotType.Available;
+
+        if (!isAvailable) return; // Return if the selected slot is not available
+
+        let slotsToSelect = 1;
+
+        if (selectedDuration === 2) {
+            // If duration is 2, select the next available slot if it exists
+            const nextSlotAvailable =
+                mappedLessons[_date]?.[_timeKeyId + 1]?.status ===
+                SlotType.Available;
+            if (nextSlotAvailable) {
+                slotsToSelect = 2;
+            } else {
+                slotsToSelect = 0;
+            }
+        } else if (selectedDuration === 3) {
+            // If duration is 3, select the next 2 available slots if they exist
+            const nextTwoSlotsAvailable =
+                mappedLessons[_date]?.[_timeKeyId + 1]?.status ===
+                    SlotType.Available &&
+                mappedLessons[_date]?.[_timeKeyId + 2]?.status ===
+                    SlotType.Available;
+            if (nextTwoSlotsAvailable) {
+                slotsToSelect = 3;
+            } else {
+                slotsToSelect = 0;
+            }
         }
+
+        // Select the slots
+        let selectedSlotsArr: { date: string; timeKeyId: number }[] = [];
+        for (let i = 0; i < slotsToSelect; i++) {
+            if (
+                mappedLessons[_date]?.[_timeKeyId + i]?.status ===
+                SlotType.Available
+            ) {
+                selectedSlotsArr.push({
+                    date: _date,
+                    timeKeyId: _timeKeyId + i,
+                });
+            } else {
+                // If any of the consecutive slots are not available, break the loop
+                break;
+            }
+        }
+
+        setSelectedSlots(selectedSlotsArr);
     };
+
+    const timeKeys: TimeKey[] = [];
+
+    let id = 0;
+    for (let hour = 8; hour <= 16; hour++) {
+        for (let minutes = 0; minutes < 60; minutes += 30) {
+            timeKeys.push({
+                id,
+                hour,
+                minutes,
+            });
+            id++;
+        }
+    }
+
+    const mapOnLessons = () => {
+        const tutorLessonsMap: LessonsMap = {};
+
+        // Assuming pageProps.tutorLessons contains lesson data
+        pageProps.tutorLessons.forEach((lesson) => {
+            const lessonStartDate = lesson.start_date; // Start date of the lesson
+
+            const lessonDate = format(lessonStartDate, "yyyy-MM-dd"); // Format lesson date
+
+            // Get the hour and minutes from the lesson start date
+            const hour = lessonStartDate.getHours();
+            const minutes = lessonStartDate.getMinutes();
+
+            // Find the timeKeyId that matches the lesson time
+            const timeKey = timeKeys.find(
+                (key) => key.hour === hour && key.minutes === minutes
+            );
+
+            // If a matching timeKey is found, use its id as timeKeyId
+            if (timeKey) {
+                const { id } = timeKey;
+
+                // Check if the lessonsMap already has the date key
+                if (!tutorLessonsMap[lessonDate]) {
+                    tutorLessonsMap[lessonDate] = {};
+                }
+
+                // Check if the lessonsMap for the specific date has the timeKeyId key
+                if (!tutorLessonsMap[lessonDate][id]) {
+                    tutorLessonsMap[lessonDate][id] = lesson;
+                }
+            }
+        });
+
+        const lessonsMap: LessonsMap = {};
+
+        let index = 1000; // Initialize index outside the mapping functions
+
+        daysOfWeek.forEach((day) => {
+            lessonsMap[day.formattedDate] = {}; // Initialize each day's map
+
+            timeKeys.forEach((timeKey) => {
+                const lessonDate = day.formattedDate;
+                const lessonId = timeKey.id;
+
+                if (tutorLessonsMap[lessonDate]?.[lessonId]) {
+                    // Copy the existing lesson from tutorLessonsMap
+                    lessonsMap[lessonDate][lessonId] =
+                        tutorLessonsMap[lessonDate][lessonId];
+                } else {
+                    // Create a new TutorLesson if not found in tutorLessonsMap
+                    const startDate = new Date(lessonDate);
+                    startDate.setHours(timeKey.hour, timeKey.minutes);
+
+                    // if (new Date() >)
+
+                    const endDate = new Date(startDate);
+                    endDate.setMinutes(startDate.getMinutes() + 30);
+
+                    lessonsMap[lessonDate][lessonId] = new TutorLesson(
+                        index,
+                        pageProps.auth.user.id,
+                        1,
+                        startDate,
+                        endDate,
+                        "Available"
+                    );
+
+                    index++;
+                }
+            });
+        });
+
+        return lessonsMap;
+    };
+
+    const mappedLessons: LessonsMap = mapOnLessons();
+
+    useEffect(() => {
+        console.log(selectedSlots);
+    }, [selectedSlots]);
 
     return (
         <div className="bg-white">
@@ -231,101 +385,86 @@ const BookLesson = () => {
                         <div className="grid grid-cols-9 gap-0.5 ">
                             <div className="col-span-1">
                                 <div className="grid gap-0.5">
-                                    <LessonTime textEnd={true} time={"08:00"} />
-                                    <LessonTime textEnd={true} time={"08:30"} />
-                                    <LessonTime textEnd={true} time={"09:00"} />
-                                    <LessonTime textEnd={true} time={"09:30"} />
-                                    <LessonTime textEnd={true} time={"10:00"} />
-                                    <LessonTime textEnd={true} time={"10:30"} />
+                                    {timeKeys.map((timeKey) => (
+                                        <LessonTime
+                                            key={timeKey.id}
+                                            textEnd={true}
+                                            time={`${String(
+                                                timeKey.hour
+                                            ).padStart(2, "0")}:${String(
+                                                timeKey.minutes
+                                            ).padStart(2, "0")}`}
+                                        />
+                                    ))}
                                 </div>
                             </div>
+                            {daysOfWeek.map((day) => (
+                                <div className="col-span-1 grid gap-0.5">
+                                    {timeKeys.map((timeKey) => {
+                                        const startDate = new Date(
+                                            day.formattedDate
+                                        );
+                                        startDate.setHours(
+                                            timeKey.hour,
+                                            timeKey.minutes
+                                        );
+
+                                        const endDate = new Date(startDate);
+                                        endDate.setMinutes(
+                                            startDate.getMinutes() + 30
+                                        );
+
+                                        return (
+                                            <div className="h-14">
+                                                <Slot
+                                                    type={
+                                                        mappedLessons[
+                                                            day.formattedDate
+                                                        ]?.[timeKey.id]?.status
+                                                    }
+                                                    onSelect={() =>
+                                                        handleSlotSelect(
+                                                            day.formattedDate,
+                                                            timeKey.id
+                                                        )
+                                                    }
+                                                    selected={selectedSlots.some(
+                                                        (slot) =>
+                                                            slot.date ===
+                                                                day.formattedDate &&
+                                                            slot.timeKeyId ===
+                                                                timeKey.id
+                                                    )}
+                                                    date={format(
+                                                        startDate,
+                                                        "EEE, MMM d, yyyy"
+                                                    )} // Format date
+                                                    timeRange={`${format(
+                                                        startDate,
+                                                        "hh:mm a"
+                                                    )} - ${format(
+                                                        endDate,
+                                                        "hh:mm a"
+                                                    )}`}
+                                                />
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            ))}
                             <div className="col-span-1 grid gap-0.5">
-                                <Slot />
-                                <Slot />
-                                <Slot
-                                    type={SlotType.Available}
-                                    onSelect={() => handleSlotSelect(0)}
-                                    selected={selectedSlots.includes(0)}
-                                />
-                                <Slot
-                                    type={SlotType.Available}
-                                    onSelect={() => handleSlotSelect(1)}
-                                    selected={selectedSlots.includes(1)}
-                                />
-                                <Slot />
-                                <Slot />
-                            </div>
-                            <div className="col-span-1 grid gap-0.5">
-                                <Slot
-                                    type={SlotType.Available}
-                                    onSelect={() => handleSlotSelect(0)}
-                                    selected={selectedSlots.includes(0)}
-                                />
-                                <Slot
-                                    type={SlotType.Available}
-                                    onSelect={() => handleSlotSelect(1)}
-                                    selected={selectedSlots.includes(1)}
-                                />
-                                <Slot />
-                                <Slot />
-                                <Slot />
-                                <Slot />
-                            </div>
-                            <div className="col-span-1 grid gap-0.5">
-                                <Slot />
-                                <Slot />
-                                <Slot />
-                                <Slot />
-                                <Slot
-                                    type={SlotType.Available}
-                                    onSelect={() => handleSlotSelect(0)}
-                                    selected={selectedSlots.includes(0)}
-                                />
-                                <Slot />
-                            </div>
-                            <div className="col-span-1 grid gap-0.5">
-                                <Slot
-                                    type={SlotType.Available}
-                                    onSelect={() => handleSlotSelect(0)}
-                                    selected={selectedSlots.includes(0)}
-                                />
-                                <Slot />
-                                <Slot />
-                                <Slot />
-                                <Slot />
-                                <Slot />
-                            </div>
-                            <div className="col-span-1 grid gap-0.5">
-                                <Slot />
-                                <Slot />
-                                <Slot />
-                                <Slot />
-                                <Slot />
-                                <Slot />
-                            </div>
-                            <div className="col-span-1 grid gap-0.5">
-                                <Slot />
-                                <Slot />
-                                <Slot />
-                                <Slot />
-                                <Slot />
-                                <Slot />
-                            </div>
-                            <div className="col-span-1 grid gap-0.5">
-                                <Slot />
-                                <Slot />
-                                <Slot />
-                                <Slot />
-                                <Slot />
-                                <Slot />
-                            </div>
-                            <div className="col-span-1 grid gap-0.5">
-                                <LessonTime time={"08:00"} />
-                                <LessonTime time={"08:30"} />
-                                <LessonTime time={"09:00"} />
-                                <LessonTime time={"09:30"} />
-                                <LessonTime time={"10:00"} />
-                                <LessonTime time={"10:30"} />
+                                {timeKeys.map((timeKey) => (
+                                    <LessonTime
+                                        key={timeKey.id}
+                                        time={`${String(timeKey.hour).padStart(
+                                            2,
+                                            "0"
+                                        )}:${String(timeKey.minutes).padStart(
+                                            2,
+                                            "0"
+                                        )}`}
+                                    />
+                                ))}
                             </div>
                         </div>
                     </div>

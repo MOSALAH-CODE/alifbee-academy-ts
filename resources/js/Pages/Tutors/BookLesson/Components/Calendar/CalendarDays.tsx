@@ -10,6 +10,7 @@ export type DayAbbreviation =
 export type Day = {
     abbreviation: DayAbbreviation;
     number: number;
+    formattedDate: string;
 };
 
 type CalendarGridProps = {
