@@ -56,7 +56,9 @@ class DashboardController extends Controller
 
                 return $query;
             })
-            ->with('tutor')
+            ->with(['tutor' => function ($query) {
+                $query->select(['id', 'name', 'email', 'profile_picture']); // Add other fields you need
+            }])
             ->orderBy('start_date', 'asc')
             ->get();
 

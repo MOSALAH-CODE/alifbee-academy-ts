@@ -57,10 +57,12 @@ const Content = ({
     width = "",
     contentClasses = "py-1 bg-white",
     children,
+    widthFull = false,
 }: PropsWithChildren<{
     align?: "left" | "right";
     width?: string;
     contentClasses?: string;
+    widthFull?: boolean;
 }>) => {
     const { open, setOpen } = useContext(DropDownContext);
 
@@ -93,7 +95,9 @@ const Content = ({
                 leaveTo="opacity-0 scale-95"
             >
                 <div
-                    className={`absolute z-50 mt-1 rounded-md shadow-md overflow-auto ${widthClasses} ${alignmentClasses}`}
+                    className={`absolute z-50 mt-1 rounded-md shadow-md overflow-auto ${widthClasses} ${alignmentClasses} ${
+                        widthFull && "w-full"
+                    }`}
                     onClick={() => setOpen(false)}
                 >
                     <div

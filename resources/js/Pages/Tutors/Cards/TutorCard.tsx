@@ -14,7 +14,7 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
     return (
         <div>
             <div className="flex divide-x-2 bg-white shadow-sm rounded-xl">
-                <Link href={`/tutors/${tutor.id}`}>
+                <Link href={route("tutors.show", { id: tutor.id })}>
                     <div className="flex items-center gap-4 p-6 rounded-l-xl hover:bg-slate-50 transition ease-in-out duration-150">
                         <img
                             style={{ height: 140, width: 140 }}
@@ -36,7 +36,14 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
                 </Link>
 
                 <div className="flex flex-col justify-center flex-shrink w-1/3 gap-2 p-6">
-                    <PrimaryButton>Book lesson</PrimaryButton>
+                    <Link
+                        className="w-full"
+                        href={route("bookLesson", { id: tutor.id })}
+                    >
+                        <PrimaryButton className="w-full">
+                            Book lesson
+                        </PrimaryButton>
+                    </Link>
                     <OutlineButton>
                         <div className="flex justify-center gap-2">
                             <EmailIcon />

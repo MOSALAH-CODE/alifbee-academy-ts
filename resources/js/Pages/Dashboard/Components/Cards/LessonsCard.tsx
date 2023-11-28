@@ -66,7 +66,7 @@ const LessonsCard = ({
                                 your first lesson, you'll see it here
                             </p>
                         </div>
-                        <Link href={"/book-lesson"}>
+                        <Link href={route("tutors")}>
                             <PrimaryButton>
                                 <ControlPointRoundedIcon
                                     className={"mr-2"}

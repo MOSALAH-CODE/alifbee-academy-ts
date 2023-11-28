@@ -102,7 +102,7 @@ export class Lesson {
     status: string;
     meet_id: string;
     password: string;
-    tutor: User;
+    tutor: Tutor;
 
     constructor(
         id: number,
@@ -114,7 +114,7 @@ export class Lesson {
         status: string,
         meet_id: string,
         password: string,
-        tutor: User
+        tutor: Tutor
     ) {
         this.id = id;
         this.user_id = user_id;
@@ -138,7 +138,7 @@ export class Lesson {
             Lesson.calculateStatus(json),
             json?.meet_id,
             json?.password,
-            User.fromJson(json?.tutor) || null // Convert tutor data to User
+            Tutor.fromJson(json?.tutor) || null // Convert tutor data to User
         );
     }
     private static calculateStatus(json: any): string {

@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import DurationOption from "./Components/DurationOption";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
-import { OutlineButton } from "@/Components/Buttons";
+import { OutlineButton, PrimaryButton } from "@/Components/Buttons";
 import { getTimeZone, useCurrentTime } from "@/utils";
 import Slot, { SlotType } from "./Components/Calendar/Slot";
 import CalendarDays, {
@@ -15,7 +15,9 @@ import CalendarDays, {
     DayAbbreviation,
 } from "./Components/Calendar/CalendarDays";
 import { addDays, format, startOfWeek, endOfWeek } from "date-fns";
-import { TutorLesson } from "@/types";
+import { Lesson, Tutor, TutorLesson, User } from "@/types";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import { Link } from "@inertiajs/react";
 
 type TimeKey = {
     id: number;
@@ -29,6 +31,8 @@ type LessonsMap = {
     };
 };
 
+const currentTime = new Date();
+
 const LessonTime = ({
     time,
     textEnd = false,
@@ -36,11 +40,17 @@ const LessonTime = ({
     time: string;
     textEnd?: boolean;
 }) => {
+    const [hour, minute] = time.split(":").map(Number);
+    const lessonTime = new Date();
+    lessonTime.setHours(hour, minute);
+    const thirtyMinutesAfter = new Date(lessonTime.getTime() + 30 * 60000);
+    const isActive =
+        currentTime >= lessonTime && currentTime <= thirtyMinutesAfter;
     return (
         <p
             className={`text-sm h-14 text-secondary-400 ${
-                textEnd ? "text-end  pr-4" : "pl-2"
-            }`}
+                textEnd ? "text-end pr-4" : "pl-2"
+            } ${isActive && "bg-primary-100"}`}
         >
             {time}
         </p>
@@ -202,6 +212,10 @@ const BookLesson = () => {
         const lessonsMap: LessonsMap = {};
 
         let index = 1000; // Initialize index outside the mapping functions
+        let status = "Available";
+
+        const currentDate = new Date();
+        const oneMonthAfter = addDays(new Date(), 30);
 
         daysOfWeek.forEach((day) => {
             lessonsMap[day.formattedDate] = {}; // Initialize each day's map
@@ -219,7 +233,11 @@ const BookLesson = () => {
                     const startDate = new Date(lessonDate);
                     startDate.setHours(timeKey.hour, timeKey.minutes);
 
-                    // if (new Date() >)
+                    if (currentDate > startDate || startDate >= oneMonthAfter) {
+                        status = "Not available";
+                    } else {
+                        status = "Available";
+                    }
 
                     const endDate = new Date(startDate);
                     endDate.setMinutes(startDate.getMinutes() + 30);
@@ -230,7 +248,7 @@ const BookLesson = () => {
                         1,
                         startDate,
                         endDate,
-                        "Available"
+                        status
                     );
 
                     index++;
@@ -243,31 +261,82 @@ const BookLesson = () => {
 
     const mappedLessons: LessonsMap = mapOnLessons();
 
+    const handleTodayClick = () => {
+        // Set the date back to the start of the current week
+        setDateRangeStart(startOfWeek(new Date()));
+    };
+
+    const createLesson = () => {
+        if (selectedSlots.length > 0) {
+            const timeKey = timeKeys.find(
+                (key) => key.id === selectedSlots[0]?.timeKeyId
+            );
+            if (timeKey) {
+                const startDate = new Date(selectedSlots[0].date);
+                startDate.setHours(timeKey.hour, timeKey.minutes);
+
+                const endDate = new Date(startDate.getTime());
+                endDate.setMinutes(
+                    startDate.getMinutes() + selectedSlots.length * 30
+                );
+
+                const lesson = new Lesson(
+                    10000, // Replace with the correct lesson ID
+                    pageProps.auth.user.id,
+                    pageProps.tutor.id, // Replace with the correct tutor lesson ID
+                    selectedSlots.length,
+                    startDate,
+                    endDate,
+                    "upcoming",
+                    "meet.zoom.com/oup-dxjr", // Replace with the actual meeting URL
+                    "12345", // Replace with the meeting ID or relevant information
+                    pageProps.tutor // Replace with actual user information
+                );
+                return lesson;
+            }
+        }
+        return null; // Return null if no selected slots or in case of other invalid scenarios
+    };
+
+    const [lesson, setLesson] = useState<Lesson | null>();
+
     useEffect(() => {
-        console.log(selectedSlots);
+        setLesson(createLesson());
     }, [selectedSlots]);
 
     return (
         <div className="bg-white">
+            <div className="fixed top-5 right-5">
+                <Link
+                    href={route("tutors")}
+                    className="w-10 h-10 rounded-full bg-white shadow-xl border border-gray-50 cursor-pointer flex items-center justify-center text-secondary-dark"
+                >
+                    <CloseRoundedIcon />
+                </Link>
+            </div>
             <div className="flex-1 max-w-6xl p-12 px-4 mx-auto md:px-6 lg:px-8">
-                <div className="flex gap-8">
-                    <div className="flex gap-2 items-center">
-                        <HexagonIcon fill="primary">
-                            <CheckRoundedIcon className="text-secondary-900" />
-                        </HexagonIcon>
-                        <p className="text-secondary-900">Your Tutor</p>
-                    </div>
-                    <div className="flex gap-2 items-center">
-                        <HexagonIcon fill="primary">
-                            <p className="text-secondary-900">02</p>
-                        </HexagonIcon>
-                        <p className="text-secondary-900">Date / time</p>
-                    </div>
-                    <div className="flex gap-2 items-center">
-                        <HexagonIcon fill="primary">
-                            <p className="text-secondary-900">03</p>
-                        </HexagonIcon>
-                        <p className="text-secondary-900">Lesson objective</p>
+                <div className="flex justify-between">
+                    <div className="flex gap-8">
+                        <div className="flex gap-2 items-center">
+                            <HexagonIcon fill="primary">
+                                <CheckRoundedIcon className="text-secondary-900" />
+                            </HexagonIcon>
+                            <p className="text-secondary-900">Your Tutor</p>
+                        </div>
+                        <div className="flex gap-2 items-center">
+                            <HexagonIcon fill="primary">
+                                <p className="text-secondary-900">02</p>
+                            </HexagonIcon>
+                            <p className="text-secondary-900">Date / time</p>
+                        </div>
+                        <div className="flex gap-2 items-center">
+                            <HexagonIcon fill="primary">
+                                <p className="text-secondary-900">03</p>
+                            </HexagonIcon>
+                            <p className="text-secondary-900">
+                                Lesson objective
+                            </p>
+                        </div>
                     </div>
                 </div>
 
@@ -336,7 +405,9 @@ const BookLesson = () => {
                                     onClick={handleShiftRight}
                                 />
                             </div>
-                            <OutlineButton>Today</OutlineButton>
+                            <OutlineButton onClick={handleTodayClick}>
+                                Today
+                            </OutlineButton>
                         </div>
 
                         <div className="grid gap-2">
@@ -380,7 +451,7 @@ const BookLesson = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="grid gap-0.5">
+                    <div className="grid gap-0.5 h-96 overflow-auto">
                         <CalendarDays days={daysOfWeek} />
                         <div className="grid grid-cols-9 gap-0.5 ">
                             <div className="col-span-1">
@@ -468,6 +539,29 @@ const BookLesson = () => {
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div className="flex gap-2 justify-end mt-6">
+                    <Link href={route("tutors")}>
+                        <OutlineButton>Cancel</OutlineButton>
+                    </Link>
+
+                    <Link
+                        href={`${
+                            lesson &&
+                            route("bookLesson.details", {
+                                lesson: lesson,
+                            })
+                        }`}
+                    >
+                        <PrimaryButton
+                            disabled={selectedSlots.length <= 0}
+                            className="flex"
+                        >
+                            <p>Continue</p>
+                            <ChevronRightRoundedIcon />
+                        </PrimaryButton>
+                    </Link>
                 </div>
             </div>
         </div>

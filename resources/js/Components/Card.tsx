@@ -7,12 +7,14 @@ const Card = ({
     divider = true,
     isSticky = false,
     isStickyHeader = false,
+    className = "",
 }: PropsWithChildren<{
     header?: ReactNode;
     footer?: ReactNode;
     divider?: boolean;
     isSticky?: boolean;
     isStickyHeader?: boolean;
+    className?: string;
 }>) => {
     const [isMounted, setIsMounted] = useState(false);
 
@@ -38,7 +40,7 @@ const Card = ({
                       }
                     : undefined
             }
-            className={`p-4 bg-white rounded-lg shadow-sm ${
+            className={`${className} p-4 bg-white rounded-lg shadow-sm ${
                 isMounted ? "card-mounted" : "card-unmounted"
             }`}
         >

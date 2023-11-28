@@ -78,7 +78,14 @@ const Show = () => {
                     >
                         <Card>
                             <div className="flex flex-col gap-2">
-                                <PrimaryButton>Book lesson</PrimaryButton>
+                                <Link
+                                    className="w-full"
+                                    href={`/tutors/book-lesson/${tutor.id}`}
+                                >
+                                    <PrimaryButton className="w-full">
+                                        Book lesson
+                                    </PrimaryButton>
+                                </Link>
                                 <OutlineButton>
                                     <div className="flex justify-center gap-2">
                                         <EmailIcon />

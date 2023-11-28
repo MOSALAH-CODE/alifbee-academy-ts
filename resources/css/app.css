@@ -2,6 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #fcae39;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: #e6e6e6;
+    border-radius: 4px;
+}
+
+.custom-shadow {
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
+}
+
 .jelly-anim {
     animation: jelly 0.5s;
 }

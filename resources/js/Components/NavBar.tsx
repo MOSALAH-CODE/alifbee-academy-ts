@@ -49,7 +49,7 @@ export default function NavBar({ user }: { user: User }) {
                     </div>
 
                     <div className="hidden lg:flex lg:gap-4 lg:items-center">
-                        <Link href={"/buy-credits"}>
+                        <Link href={"/"}>
                             <PrimaryButton className="bg-white hover:bg-gray-50">
                                 <ArrowBackIosNewRoundedIcon
                                     className="mr-1"
@@ -59,7 +59,7 @@ export default function NavBar({ user }: { user: User }) {
                             </PrimaryButton>
                         </Link>
 
-                        <Link href={"/buy-credits"}>
+                        <Link href={"/tutors"}>
                             <PrimaryButton>Book a lesson</PrimaryButton>
                         </Link>
 
