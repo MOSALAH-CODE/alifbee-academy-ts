@@ -169,12 +169,15 @@ export type PageProps = {
     auth: {
         user: User;
     };
+
     countLessons: Statuses;
     completedEduTime: string;
     nextLesson: Lesson | null;
     tutors: Tutor[];
     tutor: Tutor;
     tutorLessons: TutorLesson[];
+    lesson: Lesson;
+    error: string;
 };
 
 // Create a factory function to convert JSON data to PageProps
@@ -201,5 +204,10 @@ export const createPageProps = (json: any): PageProps => {
         tutorLessons: (json.tutorLessons || []).map((tutorLessonJson: any) =>
             TutorLesson.fromJson(tutorLessonJson)
         ),
+        lesson: Lesson.fromJson(
+            json?.lesson?.lesson ? json?.lesson?.lesson : json?.lesson
+        ),
+
+        error: json.error,
     };
 };

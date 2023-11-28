@@ -5,6 +5,9 @@ use App\Models\Lessons;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
 
 class BookLessonController extends Controller
 {
@@ -12,7 +15,9 @@ class BookLessonController extends Controller
     {
         $lessons = Lessons::where('tutor_id', $id)->get();
 
-        $tutor = User::where('id', $id)->get(['id', 'name', 'email', 'profile_picture']);
+        $tutor = User::where('id', $id)
+        ->select(['id', 'name', 'email', 'profile_picture'])
+        ->first(); 
 
         // Get the authenticated user's ID
         $authUserId = Auth::id();
@@ -33,20 +38,142 @@ class BookLessonController extends Controller
             }            
         }
 
-
         return Inertia::render('Tutors/BookLesson/Index', [
             "tutorLessons" => $lessons,
-            'tutor' => $tutor[0]
+            'tutor' => $tutor
         ]);
+    }
+    // public function create($lesson)
+    // {
+    //     // dd($lesson);
+    //     // $lessonData = json_decode(urldecode($lesson), true);
+
+    //     return Inertia::render('Tutors/BookLesson/Create', [
+    //         // 'lesson' => $lessonData,
+    //     ]);
+    // }
+    
+    public function create()
+    {
+        $lesson = Request::all();
+
+        return Inertia::render('Tutors/BookLesson/Create', [
+            'lesson' => $lesson,
+        ]);
+    }
+    
+    // public function store()
+    // {
+    //     $lessonData = Request::only(['lesson']);
+
+    //     // Extract lesson data
+    //     $lessonDetails = $lessonData['lesson'];
+
+    //     $user = Auth::user();
+
+    //     // Check if the user's balance is enough to cover the credit_cost
+    //     if ($user->balance < $lessonDetails['credit_cost']) {
+    //         return response()->json(['message' => 'Insufficient balance to purchase the lesson'], 400);
+    //     }
+    
+    //     // Create a new lesson instance with the received data
+    //     $lesson = Lessons::create([
+    //         'user_id' => $lessonDetails['user_id'],
+    //         'tutor_id' => $lessonDetails['tutor_id'],
+    //         'credit_cost' => $lessonDetails['credit_cost'],
+    //         'start_date' => $lessonDetails['start_date'],
+    //         'end_date' => $lessonDetails['end_date'],
+    //         'status' => 1,
+    //         'meet_id' => $lessonDetails['meet_id'],
+    //         'password' => $lessonDetails['password'],
+    //     ]);
+    //     $lesson->load('tutor');
+
+    //     return Inertia::render('Tutors/BookLesson/Store', [
+    //         'lesson' => $lesson,
+    //     ]);
+    // }
+
+    public function store()
+    {
+        $lessonData = Request::only(['lesson']);
+
+        // Extract lesson data
+        $lessonDetails = $lessonData['lesson'];
+
+        $start_date = $lessonDetails['start_date'];
+
+        // $start_date->setTimezone(config('app.timezone'));
+
+        dd($start_date);
+
+        // Check for existing lessons at the proposed start time for the same tutor
+        $conflictingLesson = Lessons::where('tutor_id', $lessonDetails['tutor_id'])
+            ->where('start_date', $lessonDetails['start_date'])
+            ->exists();
+
+        if ($conflictingLesson) {
+            return Inertia::render('Tutors/BookLesson/Store', [
+                'error' => 'A lesson already exists at this time for the same tutor',
+            ]);
+        }
+
+        // Get the user based on the user_id
+        $user = User::find($lessonDetails['user_id']);
+
+        if ($user->id !== Auth::user()->id){
+            return Inertia::render('Tutors/BookLesson/Store', [
+                'error' => 'Unauthorized',
+            ]); 
+        }
+
+        // Check if the user's balance is enough to cover the credit_cost
+        if ($user->balance < $lessonDetails['credit_cost']) {
+            return Inertia::render('Tutors/BookLesson/Store', [
+                'error' => 'Insufficient balance to purchase the lesson',
+            ]);
+        }
+
+        // Start a database transaction
+        DB::beginTransaction();
+
+        try {
+            // Create a new lesson instance with the received data
+            $lesson = Lessons::create([
+                'user_id' => $lessonDetails['user_id'],
+                'tutor_id' => $lessonDetails['tutor_id'],
+                'credit_cost' => $lessonDetails['credit_cost'],
+                'start_date' => $lessonDetails['start_date'],
+                'end_date' => $lessonDetails['end_date'],
+                'status' => 1,
+                'meet_id' => $lessonDetails['meet_id'],
+                'password' => $lessonDetails['password'],
+            ]);
+
+            // Subtract the credit cost from the user's balance
+            $user->balance -= $lessonDetails['credit_cost'];
+            $user->save();
+
+            // Commit the transaction
+            DB::commit();
+
+            // Load the associated tutor
+            $lesson->load('tutor');
+
+            return Inertia::render('Tutors/BookLesson/Store', [
+                'lesson' => $lesson,
+            ]);
+        } catch (\Exception $e) {
+            // Rollback the transaction if an exception occurred
+            DB::rollback();
+
+            // Handle the exception
+            return Inertia::render('Tutors/BookLesson/Store', [
+                'error' => 'Error creating the lesson: ' . $e->getMessage(),
+            ]);
+        }
     }
 
-    public function show($lesson)
-    {
-        dd($lesson);
-        // Process the selected slots as needed and pass them to the view
-        return Inertia::render('Tutors/BookLesson/Show', [
-            // 'selectedSlots' => $lesson, // Pass selected slots to the view
-        ]);
-    }
+    
 
 }

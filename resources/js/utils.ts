@@ -35,9 +35,11 @@ export function getDayOfDate(date: Date) {
         weekday: "short",
         timeZone: "Europe/Istanbul",
     };
-    const dayName = new Intl.DateTimeFormat("en-US", options).format(date);
 
-    return dayName;
+    if (date) {
+        return new Intl.DateTimeFormat("en-US", options).format(date);
+    }
+    return "";
 }
 
 export function getLessonsDuration(startDate: Date, endDate: Date) {

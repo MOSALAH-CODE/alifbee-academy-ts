@@ -17,7 +17,9 @@ import CalendarDays, {
 import { addDays, format, startOfWeek, endOfWeek } from "date-fns";
 import { Lesson, Tutor, TutorLesson, User } from "@/types";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import { Link } from "@inertiajs/react";
+import { Link, useForm } from "@inertiajs/react";
+import axios from "axios";
+import { Inertia } from "@inertiajs/inertia";
 
 type TimeKey = {
     id: number;
@@ -100,6 +102,10 @@ const BookLesson = () => {
 
     const [selectedDuration, setSelectedDuration] = useState(1);
 
+    useEffect(() => {
+        setSelectedSlots([]);
+    }, [selectedDuration]);
+
     const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedDuration(Number(event.target.value));
     };
@@ -177,6 +183,7 @@ const BookLesson = () => {
 
     const mapOnLessons = () => {
         const tutorLessonsMap: LessonsMap = {};
+        console.log(pageProps.tutorLessons);
 
         // Assuming pageProps.tutorLessons contains lesson data
         pageProps.tutorLessons.forEach((lesson) => {
@@ -300,9 +307,24 @@ const BookLesson = () => {
 
     const [lesson, setLesson] = useState<Lesson | null>();
 
+    const { data, setData, get, processing, errors } = useForm({
+        lesson: lesson,
+    });
+
     useEffect(() => {
         setLesson(createLesson());
     }, [selectedSlots]);
+
+    useEffect(() => {
+        if (lesson) {
+            setData("lesson", lesson);
+        }
+    }, [lesson]);
+
+    const submit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        get(route("bookLesson.details.create"));
+    };
 
     return (
         <div className="bg-white">
@@ -330,10 +352,10 @@ const BookLesson = () => {
                             <p className="text-secondary-900">Date / time</p>
                         </div>
                         <div className="flex gap-2 items-center">
-                            <HexagonIcon fill="primary">
-                                <p className="text-secondary-900">03</p>
+                            <HexagonIcon fill="#8E7F91">
+                                <p className="text-white">03</p>
                             </HexagonIcon>
-                            <p className="text-secondary-900">
+                            <p className="text-secondary-400">
                                 Lesson objective
                             </p>
                         </div>
@@ -541,27 +563,58 @@ const BookLesson = () => {
                     </div>
                 </div>
 
-                <div className="flex gap-2 justify-end mt-6">
+                <div className="flex gap-2 items-center justify-end mt-6">
                     <Link href={route("tutors")}>
                         <OutlineButton>Cancel</OutlineButton>
                     </Link>
-
-                    <Link
-                        href={`${
-                            lesson &&
-                            route("bookLesson.details", {
-                                lesson: lesson,
-                            })
-                        }`}
-                    >
+                    <form onSubmit={submit}>
                         <PrimaryButton
+                            type="submit"
                             disabled={selectedSlots.length <= 0}
                             className="flex"
                         >
                             <p>Continue</p>
-                            <ChevronRightRoundedIcon />
+                            <ChevronRightRoundedIcon
+                                style={{ fontSize: "18px" }}
+                            />
                         </PrimaryButton>
-                    </Link>
+                    </form>
+
+                    {/* <Link
+                        href={`/tutors/book-lesson${
+                            lesson ? "/details/" + lesson : ""
+                        }`}
+                    >
+                        <PrimaryButton
+                            type="submit"
+                            disabled={selectedSlots.length <= 0}
+                            className="flex"
+                        >
+                            <p>Continue</p>
+                            <ChevronRightRoundedIcon
+                                style={{ fontSize: "18px" }}
+                            />
+                        </PrimaryButton>
+                    </Link> */}
+                    {/* <Link
+                        href={`/tutors/book-lesson${
+                            lesson
+                                ? "/details/" +
+                                  encodeURIComponent(JSON.stringify(lesson))
+                                : ""
+                        }`}
+                    >
+                        <PrimaryButton
+                            type="submit"
+                            disabled={selectedSlots.length <= 0}
+                            className="flex"
+                        >
+                            <p>Continue</p>
+                            <ChevronRightRoundedIcon
+                                style={{ fontSize: "18px" }}
+                            />
+                        </PrimaryButton>
+                    </Link> */}
                 </div>
             </div>
         </div>

@@ -49,8 +49,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/tutors', [TutorsController::class, 'index'])->name('tutors');
     Route::get('/tutors/{id}', [TutorsController::class, 'show'])->name('tutors.show');
     Route::get('/tutors/book-lesson/{id}', [BookLessonController::class, 'index'])->name('bookLesson');
-
-    Route::get('/tutors/book-lesson/details{lesson}', [BookLessonController::class, 'show'])->name('bookLesson.details');
+    Route::get('/tutors/book-lesson/details/confirm', [BookLessonController::class, 'create'])->name('bookLesson.details.create');
+    Route::post('/tutors/book-lesson/details/purchase', [BookLessonController::class, 'Store'])->name('bookLesson.details.store');
     Route::get('/my-calendar', [CalendarController::class, 'show'])->name('calendar');
 });
 
