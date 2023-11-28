@@ -184,34 +184,46 @@ const BookLesson = () => {
     const mapOnLessons = () => {
         const tutorLessonsMap: LessonsMap = {};
         console.log(pageProps.tutorLessons);
-
-        // Assuming pageProps.tutorLessons contains lesson data
         pageProps.tutorLessons.forEach((lesson) => {
-            const lessonStartDate = lesson.start_date; // Start date of the lesson
+            const lessonStartDate = new Date(lesson.start_date);
+            const lessonEndDate = new Date(lesson.end_date);
 
-            const lessonDate = format(lessonStartDate, "yyyy-MM-dd"); // Format lesson date
+            const timeDiffInMilliseconds =
+                lessonEndDate.getTime() - lessonStartDate.getTime();
+            const timeDiffInMinutes = timeDiffInMilliseconds / (1000 * 60);
 
-            // Get the hour and minutes from the lesson start date
-            const hour = lessonStartDate.getHours();
-            const minutes = lessonStartDate.getMinutes();
+            // Assuming the duration is 30 minutes, change this value as needed
+            const durationInMinutes = 30;
 
-            // Find the timeKeyId that matches the lesson time
-            const timeKey = timeKeys.find(
-                (key) => key.hour === hour && key.minutes === minutes
-            );
+            for (
+                let index = 0;
+                index < timeDiffInMinutes / durationInMinutes;
+                index++
+            ) {
+                const modifiedStartDate = new Date(
+                    lessonStartDate.getTime() +
+                        index * durationInMinutes * 60 * 1000
+                );
 
-            // If a matching timeKey is found, use its id as timeKeyId
-            if (timeKey) {
-                const { id } = timeKey;
+                const hour = modifiedStartDate.getHours();
+                const minutes = modifiedStartDate.getMinutes();
 
-                // Check if the lessonsMap already has the date key
-                if (!tutorLessonsMap[lessonDate]) {
-                    tutorLessonsMap[lessonDate] = {};
-                }
+                const timeKey = timeKeys.find(
+                    (key) => key.hour === hour && key.minutes === minutes
+                );
 
-                // Check if the lessonsMap for the specific date has the timeKeyId key
-                if (!tutorLessonsMap[lessonDate][id]) {
-                    tutorLessonsMap[lessonDate][id] = lesson;
+                if (timeKey) {
+                    const { id } = timeKey;
+
+                    const lessonDate = format(modifiedStartDate, "yyyy-MM-dd");
+
+                    if (!tutorLessonsMap[lessonDate]) {
+                        tutorLessonsMap[lessonDate] = {};
+                    }
+
+                    if (!tutorLessonsMap[lessonDate][id]) {
+                        tutorLessonsMap[lessonDate][id] = lesson;
+                    }
                 }
             }
         });

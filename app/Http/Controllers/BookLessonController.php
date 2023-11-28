@@ -101,11 +101,11 @@ class BookLessonController extends Controller
         // Extract lesson data
         $lessonDetails = $lessonData['lesson'];
 
-        $start_date = $lessonDetails['start_date'];
+        $start_date = Carbon::parse($lessonDetails['start_date']);
+        $end_date = Carbon::parse($lessonDetails['end_date']);
 
-        // $start_date->setTimezone(config('app.timezone'));
-
-        dd($start_date);
+        $start_date->setTimezone(config('app.timezone'));
+        $end_date->setTimezone(config('app.timezone'));
 
         // Check for existing lessons at the proposed start time for the same tutor
         $conflictingLesson = Lessons::where('tutor_id', $lessonDetails['tutor_id'])
@@ -143,8 +143,8 @@ class BookLessonController extends Controller
                 'user_id' => $lessonDetails['user_id'],
                 'tutor_id' => $lessonDetails['tutor_id'],
                 'credit_cost' => $lessonDetails['credit_cost'],
-                'start_date' => $lessonDetails['start_date'],
-                'end_date' => $lessonDetails['end_date'],
+                'start_date' => $start_date,
+                'end_date' => $end_date,
                 'status' => 1,
                 'meet_id' => $lessonDetails['meet_id'],
                 'password' => $lessonDetails['password'],
