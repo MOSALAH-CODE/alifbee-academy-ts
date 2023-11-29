@@ -7,15 +7,15 @@ import { useSelector } from "react-redux";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { Link } from "@inertiajs/react";
 import { PrimaryButton } from "@/Components/Buttons";
+import { selectBookLesson } from "@/features/bookLessonSlice";
 
 const Store = () => {
     const pageProps = useSelector(selectPageProps);
 
-    const lesson = pageProps.lesson;
+    // const lesson = pageProps.lesson;
+    const lesson = useSelector(selectBookLesson);
 
     const error = pageProps.error;
-
-    console.log(error);
 
     return (
         <div className="bg-white">
@@ -68,21 +68,23 @@ const Store = () => {
                                                 </div>
                                             </td>
                                             <td>
-                                                <p>
-                                                    {formatLessonTime(
-                                                        lesson?.start_date,
-                                                        lesson?.end_date
-                                                    )}
-                                                    {", "}
-                                                    {getDayOfDate(
-                                                        lesson?.start_date
-                                                    )}
-                                                    {", "}
-                                                    <br />
-                                                    {formatDate(
-                                                        lesson?.start_date
-                                                    )}
-                                                </p>
+                                                {lesson?.start_date && (
+                                                    <p>
+                                                        {formatLessonTime(
+                                                            lesson?.start_date,
+                                                            lesson?.end_date
+                                                        )}
+                                                        {", "}
+                                                        {getDayOfDate(
+                                                            lesson?.start_date
+                                                        )}
+                                                        {", "}
+                                                        <br />
+                                                        {formatDate(
+                                                            lesson?.start_date
+                                                        )}
+                                                    </p>
+                                                )}
                                             </td>
                                         </tr>
                                         <tr>

@@ -9,16 +9,49 @@ import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownR
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
 import { ChangeEvent, useEffect, useState } from "react";
 import KeyboardArrowDownRounded from "@mui/icons-material/KeyboardArrowDownRounded";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectPageProps } from "@/features/pagePropsSlice";
 import { formatDate, formatLessonTime } from "@/utils";
 import { OutlineButton, PrimaryButton } from "@/Components/Buttons";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
+import { selectBookLesson, updateBookLesson } from "@/features/bookLessonSlice";
 
 const Create = () => {
     const pageProps = useSelector(selectPageProps);
-    const lesson = pageProps?.lesson;
+
+    const lesson = useSelector(selectBookLesson);
+    const dispatch = useDispatch();
+
+    const [isDateString, setIsDateString] = useState(false);
+
+    useEffect(() => {
+        if (lesson && typeof lesson.start_date === "string") {
+            console.log(typeof lesson.start_date);
+
+            setIsDateString(true);
+            console.log(isDateString);
+        }
+    }, []);
+
+    useEffect(() => {
+        console.log(isDateString);
+
+        if (lesson && typeof lesson.start_date === "string") {
+            console.log(lesson.start_date);
+
+            const updatedStartDate = new Date(lesson.start_date);
+            const updatedEndDate = new Date(lesson.end_date);
+            // Update the lesson with the new start_date as a Date object
+            dispatch(
+                updateBookLesson({
+                    ...lesson,
+                    start_date: updatedStartDate,
+                    end_date: updatedEndDate,
+                })
+            );
+        }
+    }, [isDateString]);
 
     const [message, setMessage] = useState("");
     const maxLength = 100;
@@ -47,8 +80,6 @@ const Create = () => {
     }, [lesson]);
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
-        console.log(lesson);
-
         e.preventDefault();
         post(route("bookLesson.details.store"));
     };
@@ -226,7 +257,7 @@ const Create = () => {
                                                     Total Price
                                                 </h3>
                                                 <h3 className="font-bold text-xl text-secondary-dark">
-                                                    {lesson.credit_cost}{" "}
+                                                    {lesson?.credit_cost}{" "}
                                                     {"Credits"}
                                                 </h3>
                                             </div>
@@ -265,7 +296,7 @@ const Create = () => {
                                                         Tutor
                                                     </p>
                                                     <p className="text-secondary-700">
-                                                        {lesson.tutor.name}
+                                                        {lesson?.tutor.name}
                                                     </p>
                                                 </div>
                                                 <div className="flex justify-between">
@@ -274,22 +305,24 @@ const Create = () => {
                                                     </p>
                                                     <div>
                                                         <p className="text-secondary-700">
-                                                            {formatDate(
-                                                                lesson.start_date,
-                                                                {
-                                                                    weekday:
-                                                                        "short",
-                                                                    month: "short",
-                                                                    day: "2-digit",
-                                                                    year: "numeric",
-                                                                }
-                                                            )}
+                                                            {lesson?.start_date &&
+                                                                formatDate(
+                                                                    lesson?.start_date,
+                                                                    {
+                                                                        weekday:
+                                                                            "short",
+                                                                        month: "short",
+                                                                        day: "2-digit",
+                                                                        year: "numeric",
+                                                                    }
+                                                                )}
                                                         </p>
                                                         <p className="text-secondary-700 text-end">
-                                                            {formatLessonTime(
-                                                                lesson.start_date,
-                                                                lesson.end_date
-                                                            )}
+                                                            {lesson?.start_date &&
+                                                                formatLessonTime(
+                                                                    lesson?.start_date,
+                                                                    lesson?.end_date
+                                                                )}
                                                         </p>
                                                     </div>
                                                 </div>

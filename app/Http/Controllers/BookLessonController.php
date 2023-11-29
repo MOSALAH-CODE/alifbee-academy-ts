@@ -55,10 +55,10 @@ class BookLessonController extends Controller
     
     public function create()
     {
-        $lesson = Request::all();
+        // $lesson = Request::all();
 
         return Inertia::render('Tutors/BookLesson/Create', [
-            'lesson' => $lesson,
+            // 'lesson' => $lesson,
         ]);
     }
     

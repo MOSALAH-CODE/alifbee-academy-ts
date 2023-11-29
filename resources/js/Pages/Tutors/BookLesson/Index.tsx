@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectPageProps } from "@/features/pagePropsSlice";
 import withPageProps from "@/Pages/withPageProps";
 import HexagonIcon from "@/Components/Icons/HexagonIcon";
@@ -20,6 +20,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { Link, useForm } from "@inertiajs/react";
 import axios from "axios";
 import { Inertia } from "@inertiajs/inertia";
+import { selectBookLesson, setBookLesson } from "@/features/bookLessonSlice";
 
 type TimeKey = {
     id: number;
@@ -183,7 +184,6 @@ const BookLesson = () => {
 
     const mapOnLessons = () => {
         const tutorLessonsMap: LessonsMap = {};
-        console.log(pageProps.tutorLessons);
         pageProps.tutorLessons.forEach((lesson) => {
             const lessonStartDate = new Date(lesson.start_date);
             const lessonEndDate = new Date(lesson.end_date);
@@ -300,43 +300,24 @@ const BookLesson = () => {
                 );
 
                 const lesson = new Lesson(
-                    10000, // Replace with the correct lesson ID
+                    10000,
                     pageProps.auth.user.id,
-                    pageProps.tutor.id, // Replace with the correct tutor lesson ID
+                    pageProps.tutor.id,
                     selectedSlots.length,
                     startDate,
                     endDate,
                     "upcoming",
-                    "meet.zoom.com/oup-dxjr", // Replace with the actual meeting URL
-                    "12345", // Replace with the meeting ID or relevant information
-                    pageProps.tutor // Replace with actual user information
+                    "meet.zoom.com/oup-dxjr",
+                    "12345",
+                    pageProps.tutor
                 );
                 return lesson;
             }
         }
-        return null; // Return null if no selected slots or in case of other invalid scenarios
+        return null;
     };
 
-    const [lesson, setLesson] = useState<Lesson | null>();
-
-    const { data, setData, get, processing, errors } = useForm({
-        lesson: lesson,
-    });
-
-    useEffect(() => {
-        setLesson(createLesson());
-    }, [selectedSlots]);
-
-    useEffect(() => {
-        if (lesson) {
-            setData("lesson", lesson);
-        }
-    }, [lesson]);
-
-    const submit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        get(route("bookLesson.details.create"));
-    };
+    const dispatch = useDispatch();
 
     return (
         <div className="bg-white">
@@ -579,26 +560,14 @@ const BookLesson = () => {
                     <Link href={route("tutors")}>
                         <OutlineButton>Cancel</OutlineButton>
                     </Link>
-                    <form onSubmit={submit}>
-                        <PrimaryButton
-                            type="submit"
-                            disabled={selectedSlots.length <= 0}
-                            className="flex"
-                        >
-                            <p>Continue</p>
-                            <ChevronRightRoundedIcon
-                                style={{ fontSize: "18px" }}
-                            />
-                        </PrimaryButton>
-                    </form>
-
-                    {/* <Link
-                        href={`/tutors/book-lesson${
-                            lesson ? "/details/" + lesson : ""
-                        }`}
+                    <Link
+                        onClick={() => {
+                            const newLesson = createLesson();
+                            dispatch(setBookLesson(newLesson));
+                        }}
+                        href={route("bookLesson.details.create")}
                     >
                         <PrimaryButton
-                            type="submit"
                             disabled={selectedSlots.length <= 0}
                             className="flex"
                         >
@@ -607,26 +576,7 @@ const BookLesson = () => {
                                 style={{ fontSize: "18px" }}
                             />
                         </PrimaryButton>
-                    </Link> */}
-                    {/* <Link
-                        href={`/tutors/book-lesson${
-                            lesson
-                                ? "/details/" +
-                                  encodeURIComponent(JSON.stringify(lesson))
-                                : ""
-                        }`}
-                    >
-                        <PrimaryButton
-                            type="submit"
-                            disabled={selectedSlots.length <= 0}
-                            className="flex"
-                        >
-                            <p>Continue</p>
-                            <ChevronRightRoundedIcon
-                                style={{ fontSize: "18px" }}
-                            />
-                        </PrimaryButton>
-                    </Link> */}
+                    </Link>
                 </div>
             </div>
         </div>
