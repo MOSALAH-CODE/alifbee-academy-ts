@@ -51,7 +51,7 @@ const LessonTime = ({
         currentTime >= lessonTime && currentTime <= thirtyMinutesAfter;
     return (
         <p
-            className={`text-sm h-14 text-secondary-400 ${
+            className={`text-xs md:text-sm h-10 md:h-14 text-secondary-400 ${
                 textEnd ? "text-end pr-4" : "pl-2"
             } ${isActive && "bg-primary-100"}`}
         >
@@ -324,27 +324,27 @@ const BookLesson = () => {
             <div className="fixed top-5 right-5">
                 <Link
                     href={route("tutors")}
-                    className="w-10 h-10 rounded-full bg-white shadow-xl border border-gray-50 cursor-pointer flex items-center justify-center text-secondary-dark"
+                    className="flex items-center justify-center w-10 h-10 bg-white border rounded-full shadow-xl cursor-pointer border-gray-50 text-secondary-dark"
                 >
                     <CloseRoundedIcon />
                 </Link>
             </div>
             <div className="flex-1 max-w-6xl p-12 px-4 mx-auto md:px-6 lg:px-8">
-                <div className="flex justify-between">
-                    <div className="flex gap-8">
-                        <div className="flex gap-2 items-center">
+                <div className="flex justify-between ">
+                    <div className="flex flex-col gap-4 sm:gap-8 sm:flex-row">
+                        <div className="flex items-center gap-2">
                             <HexagonIcon fill="primary">
                                 <CheckRoundedIcon className="text-secondary-900" />
                             </HexagonIcon>
                             <p className="text-secondary-900">Your Tutor</p>
                         </div>
-                        <div className="flex gap-2 items-center">
+                        <div className="flex items-center gap-2">
                             <HexagonIcon fill="primary">
                                 <p className="text-secondary-900">02</p>
                             </HexagonIcon>
                             <p className="text-secondary-900">Date / time</p>
                         </div>
-                        <div className="flex gap-2 items-center">
+                        <div className="flex items-center gap-2">
                             <HexagonIcon fill="#8E7F91">
                                 <p className="text-white">03</p>
                             </HexagonIcon>
@@ -356,8 +356,8 @@ const BookLesson = () => {
                 </div>
 
                 {/* Introduction to lesson duration */}
-                <div className="my-8">
-                    <h1 className="text-2xl pb-1 text-secondary-dark font-bold">
+                <div className="my-4 md:my-8">
+                    <h1 className="pb-1 text-2xl font-bold text-secondary-dark">
                         Lesson duration
                     </h1>
                     <p className="text-base text-secondary-400">
@@ -367,7 +367,7 @@ const BookLesson = () => {
                 </div>
 
                 {/* Duration options */}
-                <div className="flex gap-4 justify-between">
+                <div className="flex flex-col justify-between gap-4 md:flex-row">
                     <DurationOption
                         value={1}
                         label="30 minutes"
@@ -389,7 +389,7 @@ const BookLesson = () => {
                 </div>
 
                 <div className="my-8">
-                    <h1 className="text-2xl pb-1 text-secondary-dark font-bold">
+                    <h1 className="pb-1 text-2xl font-bold text-secondary-dark">
                         Choose a time that works for you
                     </h1>
                     <p className="text-base text-secondary-400">
@@ -400,9 +400,9 @@ const BookLesson = () => {
 
                 {/* Calendar */}
                 <div className="grid gap-4">
-                    <div className="flex justify-between">
+                    <div className="flex flex-col justify-between gap-4 md:flex-row md:gap-0">
                         <div className="flex items-center">
-                            <h2 className="w-60 text-xl font-bold text-secondary-dark">
+                            <h2 className="text-xl font-bold w-60 text-secondary-dark">
                                 {format(startOfWeek(dateRangeStart), "MMM d")} –{" "}
                                 {format(
                                     endOfWeek(dateRangeStart),
@@ -410,23 +410,26 @@ const BookLesson = () => {
                                 )}
                             </h2>
 
-                            <div className="mr-8">
+                            <div className="md:mr-8">
                                 <ChevronLeftRoundedIcon
-                                    className="text-secondary-900 cursor-pointer hover:text-primary-500"
+                                    className="cursor-pointer text-secondary-900 hover:text-primary-500"
                                     onClick={handleShiftLeft}
                                 />
                                 <ChevronRightRoundedIcon
-                                    className="text-secondary-900 cursor-pointer hover:text-primary-500"
+                                    className="cursor-pointer text-secondary-900 hover:text-primary-500"
                                     onClick={handleShiftRight}
                                 />
                             </div>
-                            <OutlineButton onClick={handleTodayClick}>
+                            <OutlineButton
+                                className="hidden md:block"
+                                onClick={handleTodayClick}
+                            >
                                 Today
                             </OutlineButton>
                         </div>
 
-                        <div className="grid gap-2">
-                            <div className="flex gap-4">
+                        <div className="grid gap-2 md:justify-end">
+                            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
                                 <div className="flex items-center gap-2">
                                     <span className="block w-3 h-3 rounded-full bg-secondary-50"></span>
                                     <p className="text-sm text-secondary-dark">
@@ -449,13 +452,13 @@ const BookLesson = () => {
                                 </div>
 
                                 <div className="flex items-center gap-2">
-                                    <span className="block w-3 h-3 rounded-full bg-success-light border border-dashed border-success"></span>
+                                    <span className="block w-3 h-3 border border-dashed rounded-full bg-success-light border-success"></span>
                                     <p className="text-sm text-secondary-dark">
                                         Booked
                                     </p>
                                 </div>
                             </div>
-                            <div className="flex justify-end items-center gap-2">
+                            <div className="flex items-center gap-2 md:justify-end">
                                 <p className="text-xs text-secondary-400">
                                     {currentTime} {getTimeZone()} Not your time
                                     zone?
@@ -468,7 +471,7 @@ const BookLesson = () => {
                     </div>
                     <div className="grid gap-0.5 h-96 overflow-auto">
                         <CalendarDays days={daysOfWeek} />
-                        <div className="grid grid-cols-9 gap-0.5 ">
+                        <div className="grid grid-cols-8 md:grid-cols-9 gap-0.5 ">
                             <div className="col-span-1">
                                 <div className="grid gap-0.5">
                                     {timeKeys.map((timeKey) => (
@@ -501,44 +504,42 @@ const BookLesson = () => {
                                         );
 
                                         return (
-                                            <div className="h-14">
-                                                <Slot
-                                                    type={
-                                                        mappedLessons[
-                                                            day.formattedDate
-                                                        ]?.[timeKey.id]?.status
-                                                    }
-                                                    onSelect={() =>
-                                                        handleSlotSelect(
-                                                            day.formattedDate,
+                                            <Slot
+                                                type={
+                                                    mappedLessons[
+                                                        day.formattedDate
+                                                    ]?.[timeKey.id]?.status
+                                                }
+                                                onSelect={() =>
+                                                    handleSlotSelect(
+                                                        day.formattedDate,
+                                                        timeKey.id
+                                                    )
+                                                }
+                                                selected={selectedSlots.some(
+                                                    (slot) =>
+                                                        slot.date ===
+                                                            day.formattedDate &&
+                                                        slot.timeKeyId ===
                                                             timeKey.id
-                                                        )
-                                                    }
-                                                    selected={selectedSlots.some(
-                                                        (slot) =>
-                                                            slot.date ===
-                                                                day.formattedDate &&
-                                                            slot.timeKeyId ===
-                                                                timeKey.id
-                                                    )}
-                                                    date={format(
-                                                        startDate,
-                                                        "EEE, MMM d, yyyy"
-                                                    )} // Format date
-                                                    timeRange={`${format(
-                                                        startDate,
-                                                        "hh:mm a"
-                                                    )} - ${format(
-                                                        endDate,
-                                                        "hh:mm a"
-                                                    )}`}
-                                                />
-                                            </div>
+                                                )}
+                                                date={format(
+                                                    startDate,
+                                                    "EEE, MMM d, yyyy"
+                                                )} // Format date
+                                                timeRange={`${format(
+                                                    startDate,
+                                                    "hh:mm a"
+                                                )} - ${format(
+                                                    endDate,
+                                                    "hh:mm a"
+                                                )}`}
+                                            />
                                         );
                                     })}
                                 </div>
                             ))}
-                            <div className="col-span-1 grid gap-0.5">
+                            <div className="hidden md:grid col-span-1 gap-0.5">
                                 {timeKeys.map((timeKey) => (
                                     <LessonTime
                                         key={timeKey.id}
@@ -556,7 +557,7 @@ const BookLesson = () => {
                     </div>
                 </div>
 
-                <div className="flex gap-2 items-center justify-end mt-6">
+                <div className="flex items-center justify-end gap-2 mt-6">
                     <Link href={route("tutors")}>
                         <OutlineButton>Cancel</OutlineButton>
                     </Link>

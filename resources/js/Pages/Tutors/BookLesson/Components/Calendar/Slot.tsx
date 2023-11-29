@@ -65,12 +65,12 @@ const Slot = ({
 
     switch (type) {
         case SlotType.NotAvailable:
-            slotContent = <div className="h-14 bg-body"></div>;
+            slotContent = <div className="h-10 md:h-14 bg-body"></div>;
             break;
         case SlotType.Available:
             slotContent = (
                 <div
-                    className={`h-14 cursor-pointer transition ease-in-out duration-150 ${
+                    className={`h-10 md:h-14 cursor-pointer transition ease-in-out duration-150 ${
                         selected
                             ? "bg-secondary-800"
                             : "bg-success-100 border-2 border-success hover:bg-success"
@@ -81,12 +81,12 @@ const Slot = ({
             break;
         case SlotType.BookedByYou:
             slotContent = (
-                <div className="h-14 cursor-pointer bg-primary-600 hover:bg-primary-800"></div>
+                <div className="h-10 cursor-pointer md:h-14 bg-primary-600 hover:bg-primary-800"></div>
             );
             break;
         case SlotType.Booked:
             slotContent = (
-                <div className="h-14 cursor-pointer bg-success-light border-2 border-success border-dashed deg45 stripes"></div>
+                <div className="h-10 border-2 border-dashed cursor-pointer md:h-14 bg-success-light border-success deg45 stripes"></div>
             );
             break;
         default:
@@ -102,10 +102,10 @@ const Slot = ({
                     <CustomTooltip
                         content={
                             <div>
-                                <div className="grid gap-2 justify-center justify-items-center">
+                                <div className="grid justify-center gap-2 justify-items-center">
                                     <div className="flex gap-2">
                                         <CalendarIcon className="stroke-secondary-dark pt-0.5" />
-                                        <div className="text-secondary-dark text-base">
+                                        <div className="text-base text-secondary-dark">
                                             <p>{date}</p>
                                             <p>{timeRange}</p>
                                         </div>

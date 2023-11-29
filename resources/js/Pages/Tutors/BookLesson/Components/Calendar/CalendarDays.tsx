@@ -28,8 +28,10 @@ const DayCell = ({ day, first = false }: { day: Day; first: boolean }) => {
             }`}
         >
             <div>
-                <p className="text-sm text-secondary-400">{day.abbreviation}</p>
-                <p className="text-2xl font-bold text-secondary-dark">
+                <p className="text-xs md:text-sm text-secondary-400">
+                    {day.abbreviation}
+                </p>
+                <p className="text-base font-bold md:text-2xl text-secondary-dark">
                     {day.number}
                 </p>
             </div>
@@ -40,7 +42,7 @@ const DayCell = ({ day, first = false }: { day: Day; first: boolean }) => {
 const CalendarDays = ({ days }: CalendarGridProps) => {
     return (
         <div
-            className="grid grid-cols-9 divide-x-2 bg-white shadow-sm"
+            className="grid grid-cols-8 bg-white divide-x-2 shadow-sm md:grid-cols-9"
             style={{ position: "sticky", top: 0, width: "100%", zIndex: 0 }}
         >
             {days.map((day, index) => (

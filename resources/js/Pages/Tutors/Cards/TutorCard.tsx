@@ -13,16 +13,18 @@ interface TutorCardProps {
 const TutorCard = ({ tutor }: TutorCardProps) => {
     return (
         <div>
-            <div className="flex divide-x-2 bg-white shadow-sm rounded-xl">
+            <div className="hidden bg-white divide-x-2 shadow-sm md:flex rounded-xl">
                 <Link href={route("tutors.show", { id: tutor.id })}>
-                    <div className="flex items-center gap-4 p-6 rounded-l-xl hover:bg-slate-50 transition ease-in-out duration-150">
+                    <div className="flex items-center gap-4 p-6 transition duration-150 ease-in-out rounded-l-xl hover:bg-slate-50">
                         <img
                             style={{ height: 140, width: 140 }}
                             className="rounded-lg"
                             src={tutor?.profile_picture}
                         />
                         <div className="grid gap-2">
-                            <h3 className="text-xl">{tutor?.name}</h3>
+                            <h3 className="text-xl font-bold text-secondary-dark">
+                                {tutor?.name}
+                            </h3>
                             <p className="text-base text-secondary-400">
                                 Hello, I am Amanda! Let me introduce myself. I
                                 live in Austria, I have attended the 250 hour
@@ -51,6 +53,37 @@ const TutorCard = ({ tutor }: TutorCardProps) => {
                         </div>
                     </OutlineButton>
                 </div>
+            </div>
+            <div className="grid bg-white shadow-sm md:hidden rounded-xl">
+                <Link href={route("tutors.show", { id: tutor.id })}>
+                    <div className="grid items-center gap-4 p-6 transition duration-150 ease-in-out rounded-xl hover:bg-slate-50">
+                        <div className="flex gap-4 divide-x">
+                            <img
+                                style={{ height: 100, width: 100 }}
+                                className="rounded-lg"
+                                src={tutor?.profile_picture}
+                            />
+                            <div className="grid gap-2 pl-4">
+                                <h3 className="text-xl font-bold text-secondary-dark">
+                                    {tutor?.name}
+                                </h3>
+                                <Link
+                                    className="w-full"
+                                    href={route("bookLesson", { id: tutor.id })}
+                                >
+                                    <PrimaryButton>Book lesson</PrimaryButton>
+                                </Link>
+                            </div>
+                        </div>
+                        <p className="text-base text-secondary-400">
+                            Hello, I am Amanda! Let me introduce myself. I live
+                            in Austria, I have attended the 250 hour expert
+                            level course from Global Language Training. From
+                            this I received a Diploma certificate in Teaching
+                            English As a Foreign Language and in Teaching
+                        </p>
+                    </div>
+                </Link>
             </div>
         </div>
     );

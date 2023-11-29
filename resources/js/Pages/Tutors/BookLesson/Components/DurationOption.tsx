@@ -16,7 +16,7 @@ const DurationOption = ({
 }: DurationOptionProps) => {
     return (
         <div
-            className={`w-1/3 flex items-center px-4 border border-gray-200 rounded hover:border-primary ${
+            className={`md:w-1/3 flex items-center px-4 border border-gray-200 rounded hover:border-primary ${
                 selected && "border-primary"
             }`}
         >
@@ -25,13 +25,13 @@ const DurationOption = ({
                 type="radio"
                 value={value}
                 name="bordered-radio"
-                className="w-4 h-4 text-primary bg-gray-100 border-gray-300 focus:ring-0"
+                className="w-4 h-4 bg-gray-100 border-gray-300 text-primary focus:ring-0"
                 checked={selected}
                 onChange={onChange}
             />
             <label
                 htmlFor={`bordered-radio-${value}`}
-                className="w-full py-4 ms-2 text-sm font-medium text-gray-900"
+                className="w-full py-4 text-sm font-medium text-gray-900 ms-2"
             >
                 {label}
             </label>

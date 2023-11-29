@@ -16,7 +16,7 @@ const Tutors = () => {
                     {pageProps.tutors.length})
                 </h1>
 
-                <p className="w-4/6 text-base text-secondary-400">
+                <p className="text-base md:w-4/6 text-secondary-400">
                     Find the best Arabiac tutor for you: choose from our
                     experienced Arabic teachers online and get the best learning
                     experience.
