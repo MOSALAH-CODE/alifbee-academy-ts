@@ -2,9 +2,7 @@ import { useSelector } from "react-redux";
 import { selectPageProps } from "@/features/pagePropsSlice";
 import { OutlineButton } from "../../../Components/Buttons";
 import TabButton from "./TabButton";
-import { Lesson } from "@/types";
-import axios from "axios";
-import { useEffect } from "react";
+import { Link } from "@inertiajs/react";
 
 interface TabNavigationProps {
     status: string;
@@ -45,9 +43,11 @@ export default function TabNavigation({
                         {title}
                     </h3>
                     {bookLessonButton && (
-                        <OutlineButton className="text-sm">
-                            Book a lesson
-                        </OutlineButton>
+                        <Link href={route("tutors")}>
+                            <OutlineButton className="text-sm">
+                                Book a lesson
+                            </OutlineButton>
+                        </Link>
                     )}
                 </div>
                 <ul className="flex flex-wrap gap-2 -mb-px text-sm md:text-base ">

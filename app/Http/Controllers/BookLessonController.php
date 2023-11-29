@@ -109,8 +109,9 @@ class BookLessonController extends Controller
 
         // Check for existing lessons at the proposed start time for the same tutor
         $conflictingLesson = Lessons::where('tutor_id', $lessonDetails['tutor_id'])
-            ->where('start_date', $lessonDetails['start_date'])
+            ->where('start_date', $start_date)
             ->exists();
+
 
         if ($conflictingLesson) {
             return Inertia::render('Tutors/BookLesson/Store', [

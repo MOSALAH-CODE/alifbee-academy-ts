@@ -30,6 +30,7 @@ const CreditBalanceCard = ({ balance }: CreditBalanceCardProps) => {
 
     useEffect(() => {
         calculateTime();
+        console.log(calculatedTime.hours, calculatedTime.hours);
     }, [balance]);
 
     return (
@@ -45,8 +46,17 @@ const CreditBalanceCard = ({ balance }: CreditBalanceCardProps) => {
                             <HexagonIcon>{balance}</HexagonIcon>
                         </div>
                         <p className="text-sm text-secondary-600">
-                            *{balance} Credits {calculatedTime.hours} hours{" "}
-                            {calculatedTime.minutes} min lesson
+                            *{balance} Credits{" "}
+                            {calculatedTime.hours === 1 &&
+                                `${calculatedTime.hours} hour `}
+                            {calculatedTime.hours > 1 &&
+                                `${calculatedTime.hours} hours `}
+                            {calculatedTime.minutes > 0 &&
+                                `${calculatedTime.minutes} min `}
+                            {calculatedTime.hours > 0 ||
+                            calculatedTime.minutes > 0
+                                ? "lessons"
+                                : ""}
                         </p>
                     </div>
                 </div>

@@ -15,43 +15,17 @@ import { formatDate, formatLessonTime } from "@/utils";
 import { OutlineButton, PrimaryButton } from "@/Components/Buttons";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
-import { selectBookLesson, updateBookLesson } from "@/features/bookLessonSlice";
+import {
+    resetBookLesson,
+    selectBookLesson,
+    updateBookLesson,
+} from "@/features/bookLessonSlice";
 
 const Create = () => {
     const pageProps = useSelector(selectPageProps);
 
     const lesson = useSelector(selectBookLesson);
     const dispatch = useDispatch();
-
-    const [isDateString, setIsDateString] = useState(false);
-
-    useEffect(() => {
-        if (lesson && typeof lesson.start_date === "string") {
-            console.log(typeof lesson.start_date);
-
-            setIsDateString(true);
-            console.log(isDateString);
-        }
-    }, []);
-
-    useEffect(() => {
-        console.log(isDateString);
-
-        if (lesson && typeof lesson.start_date === "string") {
-            console.log(lesson.start_date);
-
-            const updatedStartDate = new Date(lesson.start_date);
-            const updatedEndDate = new Date(lesson.end_date);
-            // Update the lesson with the new start_date as a Date object
-            dispatch(
-                updateBookLesson({
-                    ...lesson,
-                    start_date: updatedStartDate,
-                    end_date: updatedEndDate,
-                })
-            );
-        }
-    }, [isDateString]);
 
     const [message, setMessage] = useState("");
     const maxLength = 100;
@@ -75,11 +49,23 @@ const Create = () => {
 
     useEffect(() => {
         if (lesson) {
+            if (typeof lesson?.start_date === "string") {
+                const updatedStartDate = new Date(lesson?.start_date);
+                const updatedEndDate = new Date(lesson?.end_date);
+                dispatch(
+                    updateBookLesson({
+                        ...lesson,
+                        start_date: updatedStartDate,
+                        end_date: updatedEndDate,
+                    })
+                );
+            }
             setData("lesson", lesson);
         }
     }, [lesson]);
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
+        console.log(lesson);
         e.preventDefault();
         post(route("bookLesson.details.store"));
     };
@@ -90,7 +76,7 @@ const Create = () => {
                 <div className="fixed top-5 right-5">
                     <Link
                         href={route("tutors")}
-                        className="w-10 h-10 rounded-full bg-white shadow-xl border border-gray-50 cursor-pointer flex items-center justify-center text-secondary-dark"
+                        className="flex items-center justify-center w-10 h-10 bg-white border rounded-full shadow-xl cursor-pointer border-gray-50 text-secondary-dark"
                     >
                         <CloseRoundedIcon />
                     </Link>
@@ -98,13 +84,13 @@ const Create = () => {
                 <div className="flex-1 max-w-6xl p-12 px-4 mx-auto md:px-6 lg:px-8">
                     <div className="flex justify-between">
                         <div className="flex gap-8">
-                            <div className="flex gap-2 items-center">
+                            <div className="flex items-center gap-2">
                                 <HexagonIcon fill="primary">
                                     <CheckRoundedIcon className="text-secondary-900" />
                                 </HexagonIcon>
                                 <p className="text-secondary-900">Your Tutor</p>
                             </div>
-                            <div className="flex gap-2 items-center">
+                            <div className="flex items-center gap-2">
                                 <HexagonIcon fill="primary">
                                     <p className="text-secondary-900">02</p>
                                 </HexagonIcon>
@@ -112,7 +98,7 @@ const Create = () => {
                                     Date / time
                                 </p>
                             </div>
-                            <div className="flex gap-2 items-center">
+                            <div className="flex items-center gap-2">
                                 <HexagonIcon fill="primary">
                                     <p className="text-secondary-900">03</p>
                                 </HexagonIcon>
@@ -124,7 +110,7 @@ const Create = () => {
                     </div>
 
                     <div className="my-8">
-                        <h1 className="text-2xl pb-1 text-secondary-dark font-bold">
+                        <h1 className="pb-1 text-2xl font-bold text-secondary-dark">
                             Lesson Details
                         </h1>
                         <p className="text-base text-secondary-400">
@@ -133,19 +119,19 @@ const Create = () => {
                         </p>
                     </div>
                     <div className="md:mt-4">
-                        <div className="grid gap-6 grid-cols-12">
+                        <div className="grid grid-cols-12 gap-6">
                             {/* Left Section */}
                             <div className="col-span-12 space-y-6 md:col-span-8">
                                 <Card className="custom-shadow">
                                     <div className="flex justify-between gap-4">
-                                        <div className=" flex-1">
-                                            <p className="text-xs text-secondary-400 mb-2">
+                                        <div className="flex-1 ">
+                                            <p className="mb-2 text-xs text-secondary-400">
                                                 Lesson objective
                                             </p>
                                             <div className="relative">
                                                 <Dropdown>
                                                     <Dropdown.Trigger>
-                                                        <div className="cursor-pointer w-full flex justify-between px-4 py-2 rounded-md border border-body text-secondary-dark">
+                                                        <div className="flex justify-between w-full px-4 py-2 border rounded-md cursor-pointer border-body text-secondary-dark">
                                                             <p>Choose option</p>
                                                             <KeyboardArrowDownRoundedIcon />
                                                         </div>
@@ -169,13 +155,13 @@ const Create = () => {
                                         </div>
 
                                         <div className="relative flex-1">
-                                            <p className="text-xs text-secondary-400 mb-2">
+                                            <p className="mb-2 text-xs text-secondary-400">
                                                 Language level (Optional)
                                             </p>
                                             <div className="relative">
                                                 <Dropdown>
                                                     <Dropdown.Trigger>
-                                                        <div className="cursor-pointer w-full flex justify-between  px-4 py-2 rounded-md border border-body text-secondary-dark">
+                                                        <div className="flex justify-between w-full px-4 py-2 border rounded-md cursor-pointer border-body text-secondary-dark">
                                                             <p>B2</p>
                                                             <KeyboardArrowDownRoundedIcon />
                                                         </div>
@@ -200,7 +186,7 @@ const Create = () => {
                                     </div>
 
                                     <div className="mt-8">
-                                        <p className="text-xs text-secondary-400 mb-2">
+                                        <p className="mb-2 text-xs text-secondary-400">
                                             Any other details you'd like to add?
                                             (Optional)
                                         </p>
@@ -212,7 +198,7 @@ const Create = () => {
                                             maxLength={maxLength}
                                             className="block p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-primary-400 focus:border-primary-400"
                                         ></textarea>
-                                        <p className="text-end mt-2 text-xs text-secondary-400">
+                                        <p className="mt-2 text-xs text-end text-secondary-400">
                                             {message.length}/{maxLength}
                                         </p>
                                     </div>
@@ -220,7 +206,7 @@ const Create = () => {
                             </div>
                             {/* Right Section */}
                             <div
-                                className="col-span-12 w-full h-fit md:space-y-6 md:block md:col-span-4"
+                                className="w-full col-span-12 h-fit md:space-y-6 md:block md:col-span-4"
                                 style={{
                                     position: "sticky",
                                     top: 0,
@@ -229,7 +215,7 @@ const Create = () => {
                                 }}
                             >
                                 <Card
-                                    className="custom-shadow transition ease-in-out duration-500"
+                                    className="transition duration-500 ease-in-out custom-shadow"
                                     header={
                                         <h3 className="text-xl font-semibold text-secondary-dark">
                                             Order Summary
@@ -237,11 +223,11 @@ const Create = () => {
                                     }
                                     footer={
                                         <div className="grid gap-2">
-                                            <div className="flex justify-between items-center">
+                                            <div className="flex items-center justify-between">
                                                 <p className="text-secondary-400">
                                                     Current Balance
                                                 </p>
-                                                <p className="text-secondary-dark font-bold">
+                                                <p className="font-bold text-secondary-dark">
                                                     {
                                                         pageProps.auth.user
                                                             .balance
@@ -252,11 +238,11 @@ const Create = () => {
                                                         : "credits"}
                                                 </p>
                                             </div>
-                                            <div className="flex justify-between items-center">
-                                                <h3 className="font-bold text-xl text-secondary-dark">
+                                            <div className="flex items-center justify-between">
+                                                <h3 className="text-xl font-bold text-secondary-dark">
                                                     Total Price
                                                 </h3>
-                                                <h3 className="font-bold text-xl text-secondary-dark">
+                                                <h3 className="text-xl font-bold text-secondary-dark">
                                                     {lesson?.credit_cost}{" "}
                                                     {"Credits"}
                                                 </h3>
@@ -264,7 +250,7 @@ const Create = () => {
                                         </div>
                                     }
                                 >
-                                    <div className="text-secondary-dark mt-2">
+                                    <div className="mt-2 text-secondary-dark">
                                         <div
                                             onClick={toggleDetails}
                                             className="flex items-center justify-between cursor-pointer"
@@ -348,7 +334,7 @@ const Create = () => {
             <div className="flex-grow"></div>
 
             {/* Footer */}
-            <div className="custom-shadow p-2 px-6">
+            <div className="p-2 px-6 custom-shadow">
                 <div className="flex justify-end gap-4">
                     <OutlineButton>Back</OutlineButton>
                     <form onSubmit={submit}>

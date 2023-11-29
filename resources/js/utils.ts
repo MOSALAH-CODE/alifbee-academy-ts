@@ -2,29 +2,45 @@ import { useState, useEffect } from "react";
 import { Lesson, Statuses } from "./types";
 
 export function formatDate(
-    date: Date,
+    date: Date | string,
     options: Intl.DateTimeFormatOptions = {
         month: "long",
         day: "2-digit",
         year: "numeric",
     }
 ) {
+    if (typeof date === "string") {
+        date = new Date(date);
+    }
     return date.toLocaleDateString(undefined, options);
 }
 
-export function formatLessonTime(startTime: Date, endTime: Date) {
+export function formatLessonTime(
+    startTime: Date | string,
+    endTime: Date | string
+) {
+    if (typeof startTime === "string") {
+        startTime = new Date(startTime);
+    }
+    if (typeof endTime === "string") {
+        endTime = new Date(endTime);
+    }
     const formattedStartTime = formatTime(startTime);
     const formattedEndTime = formatTime(endTime);
 
     return `${formattedStartTime} - ${formattedEndTime}`;
 }
 
-export function formatTime(time: Date) {
+export function formatTime(time: Date | string) {
     const timeOptions: Intl.DateTimeFormatOptions = {
         hour: "2-digit",
         minute: "2-digit",
         hour12: false,
     };
+
+    if (typeof time === "string") {
+        time = new Date(time);
+    }
     const formattedTime = time.toLocaleTimeString(undefined, timeOptions);
 
     return `${formattedTime}`;

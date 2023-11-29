@@ -17,10 +17,14 @@ export const bookLessonSlice = createSlice({
         updateBookLesson: (state, action: PayloadAction<Lesson>) => {
             state.lesson = action.payload;
         },
+        resetBookLesson: (state) => {
+            state.lesson = null;
+        },
     },
 });
 
-export const { setBookLesson, updateBookLesson } = bookLessonSlice.actions;
+export const { setBookLesson, updateBookLesson, resetBookLesson } =
+    bookLessonSlice.actions;
 
 export const selectBookLesson = (state: RootState) => state.bookLesson.lesson;
 

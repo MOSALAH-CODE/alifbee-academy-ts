@@ -12,7 +12,6 @@ import { selectBookLesson } from "@/features/bookLessonSlice";
 const Store = () => {
     const pageProps = useSelector(selectPageProps);
 
-    // const lesson = pageProps.lesson;
     const lesson = useSelector(selectBookLesson);
 
     const error = pageProps.error;
@@ -22,13 +21,13 @@ const Store = () => {
             <div className="fixed top-5 right-5">
                 <Link
                     href={route("tutors")}
-                    className="w-10 h-10 rounded-full bg-white shadow-xl border border-gray-50 cursor-pointer flex items-center justify-center text-secondary-dark"
+                    className="flex items-center justify-center w-10 h-10 bg-white border rounded-full shadow-xl cursor-pointer border-gray-50 text-secondary-dark"
                 >
                     <CloseRoundedIcon />
                 </Link>
             </div>
-            <div className="grid gap-8 max-w-6xl p-12 px-4 mx-auto md:px-6 lg:px-8">
-                <div className="grid gap-4 justify-items-center justify-center items-center">
+            <div className="grid max-w-6xl gap-8 p-12 px-4 mx-auto md:px-6 lg:px-8">
+                <div className="grid items-center justify-center gap-4 justify-items-center">
                     <HexagonIcon
                         width={60}
                         height={60}
@@ -36,7 +35,7 @@ const Store = () => {
                     >
                         <DoneRoundedIcon />
                     </HexagonIcon>
-                    <h2 className="text-2xl text-center font-bold text-secondary-dark">
+                    <h2 className="text-2xl font-bold text-center text-secondary-dark">
                         {error ? error : "You booked a lesson succesfully!"}
                     </h2>
                 </div>
@@ -45,13 +44,13 @@ const Store = () => {
                     <></>
                 ) : (
                     <div className="flex justify-center">
-                        <div className="w-2/5 bg-body rounded grid divide-y px-8 py-4">
-                            <h3 className="text-xl text-secondary-dark font-bold pb-3">
+                        <div className="grid w-2/5 px-8 py-4 divide-y rounded bg-body">
+                            <h3 className="pb-3 text-xl font-bold text-secondary-dark">
                                 Booking confirmation
                             </h3>
                             <div className="">
                                 <table className="min-w-full divide-y divide-gray-200 text-secondary-dark">
-                                    <tbody className=" divide-y divide-gray-200">
+                                    <tbody className="divide-y divide-gray-200 ">
                                         <tr>
                                             <td className="h-16">
                                                 <div className="flex gap-2">
