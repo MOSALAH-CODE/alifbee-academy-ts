@@ -65,7 +65,6 @@ const Create = () => {
     }, [lesson]);
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
-        console.log(lesson);
         e.preventDefault();
         post(route("bookLesson.details.store"));
     };

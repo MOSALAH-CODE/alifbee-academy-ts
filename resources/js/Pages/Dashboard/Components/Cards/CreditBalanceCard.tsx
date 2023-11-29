@@ -30,7 +30,6 @@ const CreditBalanceCard = ({ balance }: CreditBalanceCardProps) => {
 
     useEffect(() => {
         calculateTime();
-        console.log(calculatedTime.hours, calculatedTime.hours);
     }, [balance]);
 
     return (
