@@ -5,7 +5,8 @@ import { createRoot } from "react-dom/client";
 import { createInertiaApp } from "@inertiajs/react";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { Provider } from "react-redux";
-import { store } from "./store";
+import { PersistGate } from "redux-persist/integration/react";
+import { store, persistor } from "./store";
 
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 
@@ -23,10 +24,11 @@ createInertiaApp({
 
         root.render(
             <Provider store={store}>
-                <App {...props} />
+                <PersistGate loading={null} persistor={persistor}>
+                    <App {...props} />
+                </PersistGate>
             </Provider>
         );
-        // root.render(<App {...props} />);
     },
     progress: {
         color: "#FECD34",

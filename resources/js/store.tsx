@@ -1,28 +1,32 @@
 import { configureStore } from "@reduxjs/toolkit";
+import { persistStore, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
+
+import { combineReducers } from "@reduxjs/toolkit";
+
 import pagePropsReducer from "./features/pagePropsSlice";
 import bookLessonReducer from "./features/bookLessonSlice";
 
-const rootReducer = {
+const rootReducer = combineReducers({
     pageProps: pagePropsReducer,
     bookLesson: bookLessonReducer,
+});
+
+const persistConfig = {
+    key: "root",
+    storage,
 };
-// Load state from local storage when initializing the store
-const persistedState = localStorage.getItem("reduxState")
-    ? JSON.parse(localStorage.getItem("reduxState")!)
-    : {};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-    reducer: rootReducer,
-    preloadedState: persistedState,
+    reducer: persistedReducer, // Use the persisted reducer
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: false,
         }),
 });
 
-// Save state to local storage whenever it changes
-store.subscribe(() => {
-    localStorage.setItem("reduxState", JSON.stringify(store.getState()));
-});
+export const persistor = persistStore(store); // Create a persistor object
 
 export type RootState = ReturnType<typeof store.getState>;

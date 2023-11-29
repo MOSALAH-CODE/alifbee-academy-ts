@@ -1,3 +1,5 @@
+import { type } from "os";
+
 export class User {
     id: number;
     name: string;
