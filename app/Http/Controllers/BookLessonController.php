@@ -43,56 +43,12 @@ class BookLessonController extends Controller
             'tutor' => $tutor
         ]);
     }
-    // public function create($lesson)
-    // {
-    //     // dd($lesson);
-    //     // $lessonData = json_decode(urldecode($lesson), true);
-
-    //     return Inertia::render('Tutors/BookLesson/Create', [
-    //         // 'lesson' => $lessonData,
-    //     ]);
-    // }
     
     public function create()
     {
-        // $lesson = Request::all();
 
-        return Inertia::render('Tutors/BookLesson/Create', [
-            // 'lesson' => $lesson,
-        ]);
+        return Inertia::render('Tutors/BookLesson/Create');
     }
-    
-    // public function store()
-    // {
-    //     $lessonData = Request::only(['lesson']);
-
-    //     // Extract lesson data
-    //     $lessonDetails = $lessonData['lesson'];
-
-    //     $user = Auth::user();
-
-    //     // Check if the user's balance is enough to cover the credit_cost
-    //     if ($user->balance < $lessonDetails['credit_cost']) {
-    //         return response()->json(['message' => 'Insufficient balance to purchase the lesson'], 400);
-    //     }
-    
-    //     // Create a new lesson instance with the received data
-    //     $lesson = Lessons::create([
-    //         'user_id' => $lessonDetails['user_id'],
-    //         'tutor_id' => $lessonDetails['tutor_id'],
-    //         'credit_cost' => $lessonDetails['credit_cost'],
-    //         'start_date' => $lessonDetails['start_date'],
-    //         'end_date' => $lessonDetails['end_date'],
-    //         'status' => 1,
-    //         'meet_id' => $lessonDetails['meet_id'],
-    //         'password' => $lessonDetails['password'],
-    //     ]);
-    //     $lesson->load('tutor');
-
-    //     return Inertia::render('Tutors/BookLesson/Store', [
-    //         'lesson' => $lesson,
-    //     ]);
-    // }
 
     public function store()
     {
@@ -173,8 +129,5 @@ class BookLessonController extends Controller
                 'error' => 'Error creating the lesson: ' . $e->getMessage(),
             ]);
         }
-    }
-
-    
-
+    }  
 }
